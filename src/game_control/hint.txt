@@ -1,0 +1,1 @@
+Classes de entidades (jogador, inimigos e etc)
