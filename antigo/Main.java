@@ -530,7 +530,7 @@ public class Main {
 				if(GameLib.iskeyPressed(GameLib.KEY_UP)) player_Y -= delta * player_VY;
 				if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) player_Y += delta * player_VY;
 				if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) player_X -= delta * player_VX;
-				if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) player_X += delta * player_VY;
+				if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) player_X += delta * player_VX;
 				
 				if(GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
 					

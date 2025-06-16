@@ -18,7 +18,10 @@ public class Entity {
         this.explosion_end = 0.00;
     }
 
-    // Getters and Setters for explosion_start and explosion_end
+    public Entity(Coordinate coordinate) {
+        this.coordinates = coordinate;
+    }
+
     public double getExplosionStart() {
         return explosion_start;
     }
@@ -31,7 +34,10 @@ public class Entity {
         return explosion_end;
     }
 
-    public void setExplosionEnd(double explosisting methods (getters/setters for coordinates, velocity, etc.)
+    public void setExplosionEnd(double explosion_end) {
+        this.explosion_end = explosion_end;
+    }
+
     public Coordinate getCoordinates() {
         return coordinates;
     }
@@ -55,8 +61,7 @@ public class Entity {
     public void setState(States state) {
         this.state = state;
     }
-
-    public double getRadius() {
+public double getRadius() {
         return radius;
     }
 
@@ -95,4 +100,5 @@ public class Entity {
     public void setVy(double vy) {
         this.velocity.setY(vy);
     }
+
 }

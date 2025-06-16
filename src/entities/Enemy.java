@@ -4,13 +4,19 @@ import utils.*;
 public class Enemy {
     private Entity enemy;
     private static int count;
+    private long nextShot;
+    private double angle;
+    private double RV;  
 
-    public Enemy(double x, double y, double vX, double vY, double radius) {
+    public Enemy(double x, double y, double vX, double vY, double radius, double angle, double RV) {
         Coordinate cor = new Coordinate(x, y);
         Coordinate vel = new Coordinate(vX, vY);
         States state = States.ACTIVE;
+        nextShot = System.currentTimeMillis();
+        this.angle = angle;
+        this.RV = RV;
+        count++;        
         this.enemy = new Entity(cor, vel, state, radius);
-        count++;
     }
 
     public States getState() {
@@ -37,6 +43,35 @@ public class Enemy {
         return count;
     }
     
+    public static void setCount(int count) {
+        Enemy.count = count;
+    }
+    
+    public long getNextShot() {
+        return nextShot;
+    }
+    
+    public void setNextShot(long nextShot) {
+        this.nextShot = nextShot;
+    }
+    
+    public double getAngle() {
+        return angle;
+    }
+    
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+    
+    public double getRV() {
+        return RV;
+    }
+    
+    public void setRV(double RV) {
+        this.RV = RV;
+    }
+    
+    // Convenience getters for position and velocity components
     public double getX() {
         return enemy.getX();
     }
@@ -51,5 +86,29 @@ public class Enemy {
     
     public double getVy() {
         return enemy.getVy();
+    }
+
+    // Entity state management
+    public void explosion(long currentTime) {
+        enemy.setState(States.EXPLODING);
+        enemy.setExplosionStart(currentTime);
+        enemy.setExplosionEnd(currentTime + 2000);
+    }
+    
+    //Setters
+    public void setY(double y){
+        enemy.setY(y);
+    }
+
+    public void setX(double x){
+        enemy.setX(x);
+    }
+
+    public void setVy(double vy){
+        enemy.setVy(vy);
+    }
+
+    public void setVx(double vx){
+        enemy.setVx(vx);
     }
 }
