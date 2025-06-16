@@ -1,12 +1,12 @@
 package graphics;
-import utils.GameLib;
+import utils.*;
 import java.awt.Color;
 import java.util.*;
 public class ProjectileGraphics {
     private Color color;
-    private List<double []> projectiles;
+    private List<Coordinate> projectiles;
     
-    public ProjectileGraphics(Color color, List<double []> projectiles)
+    public ProjectileGraphics(Color color, List<Coordinate> projectiles)
     {
         this.color = color;
         this.projectiles = projectiles;
