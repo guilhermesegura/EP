@@ -1,3 +1,4 @@
+package utils;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Toolkit;
@@ -6,6 +7,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
+
+
 
 /***********************************************************************/
 /*                                                                     */
