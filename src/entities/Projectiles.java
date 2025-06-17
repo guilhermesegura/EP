@@ -123,17 +123,29 @@ public class Projectiles {
         setExplosionEnd(currentTime + 2000);
     }
 
-    public boolean collision(Entity other) {
-        if (getState() != States.ACTIVE || other.getState() != States.ACTIVE) {
-            return false;
-        }
+    public boolean collision(Player player) {
+    if (getState() != States.ACTIVE || player.getState() != States.ACTIVE) {
+        return false;
+    }
 
-        double dx = getX() - other.getX();
-        double dy = getY() - other.getY();
+        double dx = getX() - player.getX();
+        double dy = getY() - player.getY();
         double distance = Math.sqrt(dx * dx + dy * dy);
 
-        return distance < (getRadius() + other.getRadius()) * 0.8;
+        return distance < (getRadius() + player.getRadius()) * 0.8;
     }
+
+public boolean collision(Enemy enemy) {
+    if (getState() != States.ACTIVE || enemy.getState() != States.ACTIVE) {
+        return false;
+    }
+
+        double dx = getX() - enemy.getX();
+        double dy = getY() - enemy.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        return distance < (getRadius() + enemy.getRadius()) * 0.8;
+}
 
     public int getType() {
         return type;
