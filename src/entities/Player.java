@@ -60,5 +60,27 @@ public class Player{
             }
         }
     }
+
+    public double getExplosionStart()
+    {
+        return player.getExplosionStart();
+    }
+    public double getExplosionEnd()
+    {
+        return player.getExplosionEnd();
+    }
+
+    public double getX()
+    {
+        return player.getX();
+    }
+    public double getY()
+    {
+        return player.getY();
+    }
+    public double getRadius()
+    {
+        return player.getRadius();
+    }
     
 }

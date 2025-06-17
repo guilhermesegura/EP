@@ -71,7 +71,6 @@ public class Enemy {
         this.RV = RV;
     }
     
-    // Convenience getters for position and velocity components
     public double getX() {
         return enemy.getX();
     }
@@ -88,14 +87,14 @@ public class Enemy {
         return enemy.getVy();
     }
 
-    // Entity state management
-    public void explosion(long currentTime) {
-        enemy.setState(States.EXPLODING);
-        enemy.setExplosionStart(currentTime);
-        enemy.setExplosionEnd(currentTime + 2000);
+    public double getExplosionStart() {
+        return enemy.getExplosionStart();
     }
-    
-    //Setters
+
+    public double getExplosionEnd() {
+        return enemy.getExplosionEnd();
+    }
+
     public void setY(double y){
         enemy.setY(y);
     }
@@ -110,5 +109,19 @@ public class Enemy {
 
     public void setVx(double vx){
         enemy.setVx(vx);
+    }
+
+    public void setExplosionStart(double explosion_start) {
+        enemy.setExplosionStart(explosion_start);
+    }
+
+    public void setExplosionEnd(double explosion_end) {
+        enemy.setExplosionEnd(explosion_end);
+    }
+
+    public void explosion(long currentTime) {
+        enemy.setState(States.EXPLODING);
+        enemy.setExplosionStart(currentTime);
+        enemy.setExplosionEnd(currentTime + 2000);
     }
 }
