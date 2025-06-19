@@ -11,6 +11,7 @@ public abstract class Enemy extends ExplodableEntity {
     public Enemy(Coordinate coordinate, Coordinate velocity, States state, double radius) {
         super(coordinate, velocity, state, radius);
         this.nextShotTime = System.currentTimeMillis() + DEFAULT_SHOOT_COOLDOWN;
+        this.angle = (3 * Math.PI) / 2.0;
     }
 
     public double getAngle() {
@@ -29,11 +30,11 @@ public abstract class Enemy extends ExplodableEntity {
         this.rotationalVelocity = rotationalVelocity;
     }
 
-    protected boolean isShotCooldownOver(long currentTime) {
+    public boolean isShotCooldownOver(long currentTime) {
         return currentTime > nextShotTime;
     }
     
-    protected void resetShotCooldown(long currentTime) {
+    public void resetShotCooldown(long currentTime) {
         this.nextShotTime = currentTime + DEFAULT_SHOOT_COOLDOWN;
     }
 

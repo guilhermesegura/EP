@@ -1,9 +1,9 @@
 import entities.*;
-import game.Loader;
 import graphics.BackGroundGraphics;
 import graphics.EnemyGraphics;
 import graphics.PlayerGraphics;
 import graphics.ProjectileGraphics;
+import utils.Coordinate;
 import utils.GameLib;
 import utils.States;
 
@@ -11,144 +11,106 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Game {
-    //private static final int MAX_PROJECTILES = 20;
-    //private static int ACTIVE_PROJECTILES = 0;
     public static void main(String[] args) {
-        // Game loop control
+        // Controle do loop do jogo
         boolean running = true;
         long currentTime = System.currentTimeMillis();
         long delta;
 
-        // Player setup
-        Player player = new Player(States.ACTIVE, GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90, 0.25, 0.25, 12.0, currentTime);
+        // Configuração do jogador
+        Player player = new Player(
+            new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
+            new Coordinate(0.25, 0.25), // Velocidade de movimento
+            12.0 // Raio
+        );
 
-        // Projectile lists
+        // Listas de projéteis e inimigos
         List<Projectiles> playerProjectiles = new ArrayList<>();
         List<Projectiles> enemyProjectiles = new ArrayList<>();
-
-        // Enemy lists
         List<Enemy> enemies = new ArrayList<>();
 
-        // Background graphics
+        // Componentes gráficos de fundo
         BackGroundGraphics background1 = new BackGroundGraphics(0.070, 20);
         BackGroundGraphics background2 = new BackGroundGraphics(0.045, 50);
 
-        // Timers for enemy spawning
+        // Temporizadores para o surgimento de inimigos (lógica hard-coded)
         long nextEnemy1 = currentTime + 2000;
         long nextEnemy2 = currentTime + 7000;
         double enemy2_spawnX = GameLib.WIDTH * 0.20;
         int enemy2_count = 0;
 
-        // Initialize graphics
+        // Inicializa a interface gráfica
         GameLib.initGraphics();
 
-        // Main game loop
+        // Loop principal do jogo
         while (running) {
             delta = System.currentTimeMillis() - currentTime;
             currentTime = System.currentTimeMillis();
 
-            // Check for collisions
-            // Player projectiles with enemies
-            for (Projectiles projectile : playerProjectiles) {
-                for (Enemy enemy : enemies) {
-                    if (projectile.collision(enemy)) {
-                        enemy.setState(States.EXPLODING);
-                        enemy.setExplosionStart(currentTime);
-                        enemy.setExplosionEnd(currentTime + 500);
-                        projectile.setState(States.INACTIVE);
-                    }
-                }
+            // --- 1. Processamento de Entrada do Usuário ---
+            if (GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) {
+                running = false;
             }
-
-            // Enemy projectiles with player
-            for (Projectiles projectile : enemyProjectiles) {
-                if (projectile.collision(player)) {
-                    player.explosion(currentTime);
-                }
-            }
-            // Enemies with player
-
-
-            // Update states
-            player.move(delta);
-            player.exploded(currentTime);
-
+            // O método update do jogador já lida com o movimento baseado na entrada
+            player.update(delta);
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL) && currentTime > player.getNextShot()) {
-                playerProjectiles.add(new Projectiles(new utils.Coordinate(player.getX(), player.getY() - 2 * player.getRadius()), new utils.Coordinate(0.0, -1.0), 2.0, Projectiles.PLAYER_PROJECTILE, 1));
-                player.shoot(currentTime);
+                // Cria um novo projétil do jogador
+                playerProjectiles.add(new Projectiles(
+                    new Coordinate(player.getX(), player.getY() - 2 * player.getRadius()),
+                    new Coordinate(0.0, -1.0), // Velocidade do projétil
+                    2.0, // Raio do projétil
+                    Projectiles.PLAYER_PROJECTILE,
+                    1 // Dano
+                ));
+                player.shoot(currentTime); // Atualiza o tempo do próximo tiro do jogador
             }
 
+            // --- 2. Atualização de Estado das Entidades (Polimorfismo) ---
+            for (Projectiles projectile : playerProjectiles) projectile.update(delta);
+            for (Projectiles projectile : enemyProjectiles) projectile.update(delta);
 
-            // Update player projectiles
-            for (Projectiles projectile : playerProjectiles) {
-                projectile.update(delta);
-            }
-
-            // Update enemy projectiles
-            for (Projectiles projectile : enemyProjectiles) {
-                projectile.update(delta);
-            }
-
-            // Update enemies
             for (Enemy enemy : enemies) {
-                if (enemy.getState() == States.EXPLODING) {
-                    if (currentTime > enemy.getExplosionEnd()) {
-                        enemy.setState(States.INACTIVE);
-                    }
-                } else if (enemy.getState() == States.ACTIVE) {
-                    if (enemy instanceof Enemy1) {
-                        ((Enemy1) enemy).move(delta);
+                enemy.update(delta); // Cada tipo de inimigo (1 ou 2) executa seu próprio update
+
+                // Lógica de tiro específica para cada inimigo
+                if (enemy.shouldShoot() && enemy.isShotCooldownOver(currentTime)) {
+                     enemy.resetShotCooldown(currentTime);
+                     if (enemy instanceof Enemy1) {
+                        double angle = Math.PI / 2; // Atira para baixo
+                        enemyProjectiles.add(new Projectiles(new Coordinate(enemy.getX(), enemy.getY()), new Coordinate(Math.cos(angle), Math.sin(angle)), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
                     } else if (enemy instanceof Enemy2) {
-                        ((Enemy2) enemy).move(delta);
+                        Enemy2 e2 = (Enemy2) enemy;
+                        double[] angles = { Math.PI / 2 + Math.PI / 8, Math.PI / 2, Math.PI / 2 - Math.PI / 8 };
+                        for (double angle : angles) {
+                            double vx = Math.cos(angle) * 0.30;
+                            double vy = Math.sin(angle) * 0.30;
+                            enemyProjectiles.add(new Projectiles(new Coordinate(e2.getX(), e2.getY()), new Coordinate(vx, vy), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
+                        }
+                        //e2.setReadyToShoot(false); // Impede disparos contínuos
                     }
                 }
             }
 
-            // Handle enemy shooting
-            for (Enemy enemy : enemies) {
-                if (enemy.getState() == States.ACTIVE) {
-                    // Logic for Enemy 1 shooting
-                    if (enemy instanceof Enemy1) {
-                        Enemy1 enemy1 = (Enemy1) enemy;
-                        if (enemy1.shouldShoot() && currentTime > enemy1.getNextShot()) {
-                            double angle = enemy1.getAngle();
-                            double vx = Math.cos(angle) * 0.45;
-                            double vy = Math.sin(angle) * 0.45 * (-1.0);
-
-                            enemyProjectiles.add(new Projectiles(new utils.Coordinate(enemy1.getX(), enemy1.getY()), new utils.Coordinate(vx, vy), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
-                            enemy1.setNextShot((long) (currentTime + 200 + Math.random() * 500));
-                        }
-                    } 
-                    // Logic for Enemy 2 shooting
-                    else if (enemy instanceof Enemy2) {
-                        Enemy2 enemy2 = (Enemy2) enemy;
-                        if (enemy2.shouldShoot()) {
-                            double[] angles = { Math.PI / 2 + Math.PI / 8, Math.PI / 2, Math.PI / 2 - Math.PI / 8 };
-                            for (double angle : angles) {
-                                double a = angle + Math.random() * Math.PI / 12 - Math.PI / 24;
-                                double vx = Math.cos(a) * 0.30;
-                                double vy = Math.sin(a) * 0.30;
-                                enemyProjectiles.add(new Projectiles(new utils.Coordinate(enemy2.getX(), enemy2.getY()), new utils.Coordinate(vx, vy), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
-                            }
-
-                            // Prevent continuous shooting
-                        }
-                    }
-                }
-            }
-
-
-            // Spawn new enemies
+            // --- 3. Surgimento de Inimigos (Hard-Coded) ---
             if (currentTime > nextEnemy1) {
-                enemies.add(new Enemy1(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0, 0.20 + Math.random() * 0.15, (3 * Math.PI) / 2, 0.0, 9.0));
-                nextEnemy1 = currentTime + 500;
+                enemies.add(new Enemy1(
+                    new Coordinate(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0),
+                    new Coordinate(0.0, 0.20 + Math.random() * 0.15), 
+                    States.ACTIVE,
+                    9.0
+                ));
+                nextEnemy1 = currentTime + 1000;
             }
 
             if (currentTime > nextEnemy2) {
-                enemies.add(new Enemy2(enemy2_spawnX, -10.0, 0.42, 0.0, 12.0, (3 * Math.PI) / 2, 0.0));
+                 enemies.add(new Enemy2(
+                    new Coordinate(enemy2_spawnX, -10.0),
+                    new Coordinate(0.42, 0.42),
+                    States.ACTIVE,
+                    12.0
+                ));
                 enemy2_count++;
                 if (enemy2_count < 10) {
                     nextEnemy2 = currentTime + 120;
@@ -159,15 +121,40 @@ public class Game {
                 }
             }
 
-            // Exit condition
-            if (GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) {
-                running = false;
+            // --- 4. Verificação de Colisões ---
+            // Projéteis do jogador com inimigos
+            for (Projectiles p : playerProjectiles) {
+                for (Enemy e : enemies) {
+                    if (Collision.VerifyColision(p, e)) {
+                        e.explosion(currentTime);
+                        p.setState(States.INACTIVE);
+                    }
+                }
             }
 
-            // Draw scene
+            // Projéteis inimigos com jogador e Inimigos com jogador
+            if (player.getState() == States.ACTIVE) {
+                for (Projectiles p : enemyProjectiles) {
+                    if (Collision.VerifyColision(p, player)) {
+                        player.explosion(currentTime);
+                        p.setState(States.INACTIVE);
+                    }
+                }
+                for (Enemy e : enemies) {
+                    if (Collision.VerifyColision(e, player)) {
+                        player.explosion(currentTime);
+                    }
+                }
+            }
+
+            // --- 5. Limpeza de Entidades Inativas ---
+            playerProjectiles.removeIf(p -> p.getState() == States.INACTIVE);
+            enemyProjectiles.removeIf(p -> p.getState() == States.INACTIVE);
+            enemies.removeIf(e -> e.getState() == States.INACTIVE);
+
+            // --- 6. Desenho da Cena ---
             background2.setColor(Color.DARK_GRAY);
             background2.fillBakcGround(delta);
-
             background1.setColor(Color.GRAY);
             background1.fillBakcGround(delta);
 
@@ -178,7 +165,7 @@ public class Game {
 
             GameLib.display();
 
-            // Delay for constant frame rate
+            // Pausa para manter uma taxa de quadros constante
             try {
                 Thread.sleep(3);
             } catch (InterruptedException e) {

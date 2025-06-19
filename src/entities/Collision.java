@@ -1,7 +1,7 @@
 package entities;
 import utils.*;
 
-class Collision{
+public class Collision{
     
     public static boolean VerifyColision(ICollidable a , ICollidable b){
         if (a.getState() != States.ACTIVE || b.getState() != States.ACTIVE) {
