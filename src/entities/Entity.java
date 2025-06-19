@@ -1,41 +1,19 @@
 package entities;
 import utils.*;
 
-public class Entity {
+public abstract class Entity implements IEntity {
+
     private Coordinate coordinates;
     private Coordinate velocity;
     private States state;
     private double radius;
-    private double explosion_start;
-    private double explosion_end;
+
 
     public Entity(Coordinate coordinate, Coordinate velocity, States state, double radius) {
         this.coordinates = coordinate;
         this.velocity = velocity;
         this.state = state;
         this.radius = radius;
-        this.explosion_start = 0.00;
-        this.explosion_end = 0.00;
-    }
-
-    public Entity(Coordinate coordinate) {
-        this.coordinates = coordinate;
-    }
-
-    public double getExplosionStart() {
-        return explosion_start;
-    }
-
-    public void setExplosionStart(double explosion_start) {
-        this.explosion_start = explosion_start;
-    }
-
-    public double getExplosionEnd() {
-        return explosion_end;
-    }
-
-    public void setExplosionEnd(double explosion_end) {
-        this.explosion_end = explosion_end;
     }
 
     public Coordinate getCoordinates() {
@@ -61,7 +39,8 @@ public class Entity {
     public void setState(States state) {
         this.state = state;
     }
-public double getRadius() {
+
+    public double getRadius() {
         return radius;
     }
 
@@ -100,5 +79,9 @@ public double getRadius() {
     public void setVy(double vy) {
         this.velocity.setY(vy);
     }
+
+	public Coordinate getCoordinate() {
+        return this.coordinates;
+	}
 
 }

@@ -6,15 +6,18 @@ public class Enemy2 extends Enemy {
     private static final double SCREEN_PADDING = 10.0;
     private static final double ANGLE_TOLERANCE = 0.05;
     private static final double ACTIVATION_THRESHOLD = 0.30;
+    private static final double LEFT_SIDE_RV = 0.003;
+    private static final double RIGHT_SIDE_RV = -0.003;
+    private static final double SHOOT_ANGLE_LEFT = 0.0;
+    private static final double SHOOT_ANGLE_RIGHT = 3 * Math.PI;
     
-    private boolean shootNow;
+    private boolean readyToShoot;
     private double previousY;
     private boolean passedThreshold;
 
-    public Enemy2(double x, double y, double vX, double vY, double radius, double angle, double RV) {
-        super(x, y, vX, vY, radius, angle, RV);
-        this.shootNow = false;
-        this.previousY = y;
+    public Enemy2(Coordinate coordinate, Coordinate velocity, States state, double radius) {
+        super(coordinate, velocity, state, radius);
+        this.readyToShoot = false;
         this.passedThreshold = false;
     }
 
@@ -23,55 +26,58 @@ public class Enemy2 extends Enemy {
         return !(getX() < -SCREEN_PADDING || getX() > GameLib.WIDTH + SCREEN_PADDING);
     }
 
-    public void move(long delta) {
-        if (getState() != ACTIVE) return;
-        
-        previousY = getY();
-        
-        double velocityMagnitude = Math.sqrt(getVx() * getVx() + getVy() * getVy());
-        
-        double newX = getX() + velocityMagnitude * Math.cos(getAngle()) * delta;
-        double newY = getY() + velocityMagnitude * Math.sin(getAngle()) * delta * (-1.0);
-        double newAngle = getAngle() + getRV() * delta;
-        
-        setX(newX);
-        setY(newY);
-        setAngle(newAngle);
-        
-        checkThresholdBehavior();
-        checkShootingConditions();
-
-        if (!isOnScreen()) {
-            setState(INACTIVE);
-        }
-    }
-
     private void checkThresholdBehavior() {
         if (!passedThreshold) {
             double thresholdY = GameLib.HEIGHT * ACTIVATION_THRESHOLD;
             if (previousY < thresholdY && getY() >= thresholdY) {
-                setRV((getX() < GameLib.WIDTH / 2) ? 0.003 : -0.003);
+                setRotationalVelocity((getX() < GameLib.WIDTH / 2) ? LEFT_SIDE_RV : RIGHT_SIDE_RV);
                 passedThreshold = true;
             }
         }
     }
 
     private void checkShootingConditions() {
-        shootNow = false;
+        readyToShoot = false;
         
-        if (getRV() > 0 && Math.abs(getAngle() - 3 * Math.PI) < ANGLE_TOLERANCE) {
-            setRV(0.0);
-            setAngle(3 * Math.PI);
-            shootNow = true;
+        if (getRotationalVelocity() > 0 && Math.abs(getAngle() - SHOOT_ANGLE_RIGHT) < ANGLE_TOLERANCE) {
+            setRotationalVelocity(0.0);
+            setAngle(SHOOT_ANGLE_RIGHT);
+            readyToShoot = true;
         }
-        else if (getRV() < 0 && Math.abs(getAngle()) < ANGLE_TOLERANCE) {
-            setRV(0.0);
-            setAngle(0.0);
-            shootNow = true;
+        else if (getRotationalVelocity() < 0 && Math.abs(getAngle() - SHOOT_ANGLE_LEFT) < ANGLE_TOLERANCE) {
+            setRotationalVelocity(0.0);
+            setAngle(SHOOT_ANGLE_LEFT);
+            readyToShoot = true;
         }
     }
 
     public boolean shouldShoot() {
-        return shootNow;
+        return readyToShoot;
+    }
+
+    public void update(long delta){
+        if (getState() == States.EXPLODING) {
+            if (System.currentTimeMillis() > getExplosionEnd()) 
+                setState(States.INACTIVE);
+        }    
+        if (getState() == States.ACTIVE){
+        
+            previousY = getY();
+        
+            double velocityMagnitude = Math.sqrt(getVx() * getVx() + getVy() * getVy());
+            double newX = getX() + velocityMagnitude * Math.cos(getAngle()) * delta;
+            double newY = getY() + velocityMagnitude * Math.sin(getAngle()) * delta * (-1.0);
+        
+            setX(newX);
+            setY(newY);
+            setAngle(getAngle() + getRotationalVelocity() * delta);
+        
+            checkThresholdBehavior();
+            checkShootingConditions();
+
+            if (!isOnScreen()) {
+                setState(INACTIVE);
+            }
+        }
     }
 }

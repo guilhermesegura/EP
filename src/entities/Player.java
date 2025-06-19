@@ -2,44 +2,37 @@ package entities;
 
 import utils.*;
 
-public class Player{
-    Entity player;
+public class Player extends ExplodableEntity implements ICollidable {
+
     long nextShot;
 
-    public Player(States state, double x, double y, double vx, double vy, double radius, long currentTime)
+    public Player(Coordinate coordinate, Coordinate velocity, double radius)
     {
-        player = new Entity(new Coordinate(x, y), new Coordinate(vx, vy), States.ACTIVE, radius);
+        super(coordinate, velocity, States.ACTIVE, radius);
         nextShot = System.currentTimeMillis();
     }
-    public States getState()
-    {
-        return player.getState();
-    }
-    public void setState(States state)
-    {
-        player.setState(state);
-    }
-    public void explosion(long currentTime)
-    {
-        player.setState(States.EXPLODING);
-        player.setExplosionStart(currentTime);
-        player.setExplosionEnd(currentTime + 2000);
-    }
-    public void move(double delta)
-    {
-        if(player.getState() == States.ACTIVE)
-        {
-            if(GameLib.iskeyPressed(GameLib.KEY_UP)) player.setY(player.getY() - delta * player.getVy());
-            if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) player.setY(player.getY() + delta * player.getVy());
-            if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) player.setX(player.getX() - delta * player.getVx());
-            if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) player.setX(player.getX() + delta * player.getVx());
 
-            if(player.getX() < 0.0) player.setX(0.0);
-			if(player.getX() >= GameLib.WIDTH) player.setX(GameLib.WIDTH - 1);
-			if(player.getY() < 25.0) player.setY(25.0);
-			if(player.getY() >= GameLib.HEIGHT) player.setY(GameLib.HEIGHT - 1);
+    public void update(long delta) {
+        // Trata estado de explosão
+        if (getState() == States.EXPLODING) {
+            if (System.currentTimeMillis() > getExplosionEnd()) 
+                setState(States.ACTIVE);
+            }
+
+        if(getState() == States.ACTIVE)
+        {
+            if(GameLib.iskeyPressed(GameLib.KEY_UP)) setY(getY() - delta * getVy());
+            if(GameLib.iskeyPressed(GameLib.KEY_DOWN)) setY(getY() + delta * getVy());
+            if(GameLib.iskeyPressed(GameLib.KEY_LEFT)) setX(getX() - delta * getVx());
+            if(GameLib.iskeyPressed(GameLib.KEY_RIGHT)) setX(getX() + delta * getVx());
+
+            if(getX() < 0.0) setX(0.0);
+            if(getX() >= GameLib.WIDTH) setX(GameLib.WIDTH - 1);
+            if(getY() < 25.0) setY(25.0);
+            if(getY() >= GameLib.HEIGHT) setY(GameLib.HEIGHT - 1);
         }
     }
+
     public long getNextShot()
     {
         return nextShot;
@@ -49,38 +42,4 @@ public class Player{
     {
         nextShot = currentTime + 100;
     }
-
-    public void exploded(long currentTime)
-    {
-        if(player.getState() == States.EXPLODING)
-        {
-            if(currentTime > player.getExplosionEnd())
-            {
-                player.setState(States.ACTIVE);
-            }
-        }
-    }
-
-    public double getExplosionStart()
-    {
-        return player.getExplosionStart();
-    }
-    public double getExplosionEnd()
-    {
-        return player.getExplosionEnd();
-    }
-
-    public double getX()
-    {
-        return player.getX();
-    }
-    public double getY()
-    {
-        return player.getY();
-    }
-    public double getRadius()
-    {
-        return player.getRadius();
-    }
-    
 }
