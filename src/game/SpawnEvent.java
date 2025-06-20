@@ -8,7 +8,7 @@ public class SpawnEvent {
   private int time;
   private int x;
   private int y;
-  private int life; // será aplicado apenas para os boss e player
+  private int life; // será aplicado apenas para os boss
 
   public SpawnEvent(Type type, int entityType, int time, int x, int y, int life){
         this.type = type;

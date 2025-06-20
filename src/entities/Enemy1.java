@@ -42,10 +42,7 @@ public class Enemy1 extends Enemy {
         }
     }
 
-    public void update() {
-        if (getState() == States.EXPLODING) {
-            if (System.currentTimeMillis() > getExplosionEnd()) 
-                setState(States.INACTIVE);
-        }
+    public boolean shouldSpawn(long currentTime){
+        return false;
     }
 }

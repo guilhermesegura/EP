@@ -35,7 +35,7 @@ public abstract class ExplodableEntity extends Entity implements IExplodable{
     {
         setState(States.EXPLODING);
         setExplosionStart(currentTime);
-        setExplosionEnd(currentTime + 2000);
+        setExplosionEnd(currentTime + 500);
     }
 
     public void TakeDamage()

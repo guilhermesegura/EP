@@ -10,7 +10,8 @@ public class Enemy2 extends Enemy {
     private static final double RIGHT_SIDE_RV = -0.003;
     private static final double SHOOT_ANGLE_LEFT = 0.0;
     private static final double SHOOT_ANGLE_RIGHT = 3 * Math.PI;
-    
+    private static final double VELOCITY = 0.42;
+
     private boolean readyToShoot;
     private double previousY;
     private boolean passedThreshold;
@@ -63,10 +64,9 @@ public class Enemy2 extends Enemy {
         if (getState() == States.ACTIVE){
         
             previousY = getY();
-        
-            double velocityMagnitude = Math.sqrt(getVx() * getVx() + getVy() * getVy());
-            double newX = getX() + velocityMagnitude * Math.cos(getAngle()) * delta;
-            double newY = getY() + velocityMagnitude * Math.sin(getAngle()) * delta * (-1.0);
+    
+            double newX = getX() + VELOCITY * Math.cos(getAngle()) * delta;
+            double newY = getY() + B * Math.sin(getAngle()) * delta * (-1.0);
         
             setX(newX);
             setY(newY);
@@ -80,4 +80,15 @@ public class Enemy2 extends Enemy {
             }
         }
     }
+
+    public void setReadyToShoot(boolean ready) {
+        this.readyToShoot = ready;
+    }
+
+    
 }
+
+/*
+
+
+ */

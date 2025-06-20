@@ -72,23 +72,27 @@ public class Game {
             for (Projectiles projectile : enemyProjectiles) projectile.update(delta);
 
             for (Enemy enemy : enemies) {
-                enemy.update(delta); // Cada tipo de inimigo (1 ou 2) executa seu próprio update
+                enemy.update(delta);
 
-                // Lógica de tiro específica para cada inimigo
-                if (enemy.shouldShoot() && enemy.isShotCooldownOver(currentTime)) {
-                     enemy.resetShotCooldown(currentTime);
-                     if (enemy instanceof Enemy1) {
-                        double angle = Math.PI / 2; // Atira para baixo
-                        enemyProjectiles.add(new Projectiles(new Coordinate(enemy.getX(), enemy.getY()), new Coordinate(Math.cos(angle), Math.sin(angle)), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
+                // Lógica de tiro polimórfica e corrigida
+                if (enemy.shouldShoot()) {
+                    if (enemy instanceof Enemy1) {
+                        if (enemy.isShotCooldownOver(currentTime)) {
+                            enemy.resetShotCooldown(currentTime);
+                            // Lógica de tiro do Enemy1 (atira para baixo)
+                            enemyProjectiles.add(new Projectiles(new Coordinate(enemy.getX(), enemy.getY()), new Coordinate(0.0, 0.45), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
+                        }
                     } else if (enemy instanceof Enemy2) {
                         Enemy2 e2 = (Enemy2) enemy;
+                        // Lógica de tiro do Enemy2
                         double[] angles = { Math.PI / 2 + Math.PI / 8, Math.PI / 2, Math.PI / 2 - Math.PI / 8 };
                         for (double angle : angles) {
-                            double vx = Math.cos(angle) * 0.30;
-                            double vy = Math.sin(angle) * 0.30;
+                            double a = angle + Math.random() * Math.PI/6 - Math.PI/12;
+                            double vx = Math.cos(a) * 0.30;
+                            double vy = Math.sin(a) * 0.30;
                             enemyProjectiles.add(new Projectiles(new Coordinate(e2.getX(), e2.getY()), new Coordinate(vx, vy), 2.0, Projectiles.ENEMY_PROJECTILE, 1));
                         }
-                        //e2.setReadyToShoot(false); // Impede disparos contínuos
+                        //e2.setReadyToShoot(false); // USA O NOVO MÉTODO para impedir disparos contínuos
                     }
                 }
             }
