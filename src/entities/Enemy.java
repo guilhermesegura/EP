@@ -1,7 +1,7 @@
 package entities;
 import utils.*;
 
-public abstract class Enemy extends ExplodableEntity implements Spawnable{
+public abstract class Enemy extends ExplodableEntity implements ISpawnable{
     protected static final long DEFAULT_SHOOT_COOLDOWN = 1000; 
     protected static final long DEFAULT_SPAWN_COOLDOWN = 2000;
     
@@ -9,7 +9,8 @@ public abstract class Enemy extends ExplodableEntity implements Spawnable{
     protected double angle;
     protected double rotationalVelocity;  
     protected int spawnCount = 0;
-    
+    protected long nextSpawnTime;
+
     public Enemy(Coordinate coordinate, Coordinate velocity, States state, double radius)  {
         super(coordinate, velocity, state, radius);
         this.nextShotTime = System.currentTimeMillis() + DEFAULT_SHOOT_COOLDOWN;
@@ -46,13 +47,16 @@ public abstract class Enemy extends ExplodableEntity implements Spawnable{
 
     public abstract boolean shouldShoot();
 
+    @Override
     public boolean shouldSpawn(long currentTime){
         return currentTime > nextSpawnTime;
     }
 
+    @Override
     public void updateSpawnTimer(long currentTime) {
-        this.nextSpawnTime = currentTime + 
+        this.nextSpawnTime = currentTime + DEFAULT_SPAWN_COOLDOWN;
     }
-
-    public 
+    
+    @Override
+    public abstract void spawn(long currentTime);
 }

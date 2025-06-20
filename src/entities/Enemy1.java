@@ -8,6 +8,7 @@ public class Enemy1 extends Enemy {
 
     public Enemy1(Coordinate coordinate, Coordinate velocity, States state, double radius) {
         super(coordinate, velocity, state, radius);
+        this.nextSpawnTime = 2000;
     }
 
     @Override
@@ -44,5 +45,19 @@ public class Enemy1 extends Enemy {
 
     public boolean shouldSpawn(long currentTime){
         return false;
+    }
+
+
+    @Override
+    public void spawn(long currentTime) {
+        setX(Math.random() * (GameLib.WIDTH - 20.0) + 10.0);
+        setY(-10.0);
+        setVx(0.20 + Math.random() * 0.15);
+        setVy(0);
+        setAngle((3 * Math.PI) / 2);
+        setRotationalVelocity(0.0);
+        setState(States.ACTIVE);
+        resetShotCooldown(currentTime);
+        updateSpawnTimer(currentTime);
     }
 }

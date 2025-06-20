@@ -3,13 +3,12 @@ import graphics.BackGroundGraphics;
 import graphics.EnemyGraphics;
 import graphics.PlayerGraphics;
 import graphics.ProjectileGraphics;
-import utils.Coordinate;
-import utils.GameLib;
-import utils.States;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import utils.Coordinate;
+import utils.GameLib;
+import utils.States;
 
 public class Game {
     public static void main(String[] args) {
