@@ -1,7 +1,6 @@
 package entities;
 
 import utils.*;
-import entities.interfaces.*;
 
 public abstract class ExplodableEntity extends Entity {
     private int health;
@@ -23,7 +22,7 @@ public abstract class ExplodableEntity extends Entity {
         this.health = health;
     }
 
-    public void takeDamage(double damage) {
+    public void takeDamage(int damage) {
         this.health -= damage;
         if (this.health <= 0) {
             this.setState(States.EXPLODING);

@@ -2,23 +2,18 @@ package entities;
 import utils.Coordinate;
 import utils.GameLib;
 import utils.States;
-import entities.interfaces.*;
 
 public class Boss extends Enemy {
 
     private long lastAttackTime;
     private long attackCooldown = 2000; // 2 seconds
     private int attackPattern = 0;
-    private int maxHealth;
-    private int currentHealth;
-    private int size;
+    private static final int MAX_HEALTH = 100;
+    private static final double MAX_RADIUS = 30.0;
 
-    public Boss(Coordinate coordinate, Coordinate velocity, int health, int size) {
-        super(coordinate, velocity, States.ACTIVE, 30.0, health); // Larger radius for the boss
-        this.maxHealth = health;
-        this.currentHealth = health;
+    public Boss(Coordinate coordinate, Coordinate velocity) {
+        super(coordinate, velocity, States.ACTIVE, MAX_RADIUS, MAX_HEALTH);
         this.lastAttackTime = System.currentTimeMillis();
-        this.size = size;
     }
 
     @Override
@@ -31,14 +26,16 @@ public class Boss extends Enemy {
         }
 
         if (getState() == States.ACTIVE) {
-            // Movement pattern: Move horizontally and slightly vertically
+            // Movimento horizontal com reversão ao tocar a borda
             setX(getX() + getVx() * delta);
             if (getX() < getRadius() || getX() > GameLib.WIDTH - getRadius()) {
-                setVx(getVx() * -1); // Reverse horizontal direction
+                setVx(getVx() * -1);
             }
+
+            // Movimento vertical até 30% da tela
             setY(getY() + getVy() * delta);
             if (getY() > GameLib.HEIGHT * 0.3) {
-                setVy(0); // Stop moving down
+                setVy(0);
             }
         }
     }
@@ -51,19 +48,33 @@ public class Boss extends Enemy {
         lastAttackTime = System.currentTimeMillis();
         switch (attackPattern) {
             case 0:
-                // Shoots a spread of projectiles
+                // Disparo em leque
                 for (int i = -2; i <= 2; i++) {
                     double angle = Math.PI / 2 + i * (Math.PI / 8);
                     double vx = Math.cos(angle) * 0.3;
                     double vy = Math.sin(angle) * 0.3;
-                    enemyProjectiles.add(new Projectiles(new Coordinate(getX(), getY()), new Coordinate(vx, vy), 5.0, Projectiles.ENEMY_PROJECTILE, 1));
+                    enemyProjectiles.add(new Projectiles(
+                        new Coordinate(getX(), getY()),
+                        new Coordinate(vx, vy),
+                        5.0,
+                        Projectiles.ENEMY_PROJECTILE,
+                        1
+                    ));
                 }
                 break;
+
             case 1:
-                // Shoots a powerful, single projectile
-                enemyProjectiles.add(new Projectiles(new Coordinate(getX(), getY()), new Coordinate(0, 0.5), 10.0, Projectiles.ENEMY_PROJECTILE, 3));
+                // Disparo único forte
+                enemyProjectiles.add(new Projectiles(
+                    new Coordinate(getX(), getY()),
+                    new Coordinate(0, 0.5),
+                    10.0,
+                    Projectiles.ENEMY_PROJECTILE,
+                    3
+                ));
                 break;
         }
+
         attackPattern = (attackPattern + 1) % 2;
     }
 
@@ -72,33 +83,25 @@ public class Boss extends Enemy {
                getY() > -getRadius() && getY() < GameLib.HEIGHT + getRadius();
     }
 
-
     public boolean shouldShoot() {
         return canAttack();
     }
-    
+
     public int getMaxHealth() {
-        return maxHealth;
+        return MAX_HEALTH;
     }
 
-    public int getCurrentHealth() {
-        return currentHealth;
-    }
-
-    public int getSize() {
-        return size;
+    public double getMaxRadius() {
+        return MAX_RADIUS;
     }
 
     @Override
-    public void takeDamage(double damage) {
-        // Garante que o chefe só tome dano se estiver ativo
+    public void takeDamage(int damage) {
         if (getState() != States.ACTIVE) return;
 
-        this.currentHealth -= damage;
-        if (this.currentHealth <= 0) {
-            this.currentHealth = 0;
-            // Ao invés de setar o estado para INACTIVE, 
-            // chama o método de explosão que já gerencia o estado corretamente.
+        setHealth(getHealth() - damage);
+        if (getHealth() <= 0) {
+            setHealth(0);
             explosion(System.currentTimeMillis());
         }
     }

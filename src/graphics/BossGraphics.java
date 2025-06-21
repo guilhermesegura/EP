@@ -1,8 +1,8 @@
 package graphics;
 
 import entities.Boss;
-import utils.*;
 import java.awt.Color;
+import utils.*;
 
 public class BossGraphics {
 
@@ -30,7 +30,7 @@ public class BossGraphics {
             {1,0,1,0,0,1,0,1}
         };
         
-        double pixelSize = boss.getSize()/4;
+        double pixelSize = boss.getRadius()/4;
         
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -46,15 +46,16 @@ public class BossGraphics {
     }
 
     private static void drawHealthBar(Boss boss) {
-        double barWidth = boss.getSize() * 1.5 + 1;
+        double barWidth = boss.getRadius() * 1.5 + 1;
         double barHeight = 4;
         double barX = boss.getX() - barWidth/2 + 20;
-        double barY = boss.getY() - boss.getSize()/2 -30; 
-    
+        double barY = boss.getY() - boss.getRadius()/2 -30; 
+        double bossRatio = boss.getHealth() / (double)boss.getMaxHealth();
+
         GameLib.setColor(Color.RED);
         GameLib.fillRect(barX, barY, barWidth, barHeight);
-        GameLib.setColor(Color.BLUE);
-        GameLib.fillRect(barX, barY, barWidth * (boss.getCurrentHealth() / boss.getMaxHealth()), barHeight);
+        GameLib.setColor(Color.GREEN);
+        GameLib.fillRect(barX, barY, barWidth * bossRatio, barHeight);
     }
 }
 

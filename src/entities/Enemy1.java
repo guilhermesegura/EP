@@ -1,14 +1,26 @@
 package entities;
+
 import utils.*;
 import static utils.States.*;
-import entities.interfaces.*;
 
 public class Enemy1 extends Enemy {
-    private static final double SCREEN_BOTTOM_PADDING = 10.0;
-    private static final double SHOOTING_HEIGHT_RATIO = 0.5; 
 
-    public Enemy1(Coordinate coordinate, Coordinate velocity, States state, double radius, int health) {
-        super(coordinate, velocity, state, radius, health);
+    private static final double SCREEN_BOTTOM_PADDING = 10.0;
+    private static final double SHOOTING_HEIGHT_RATIO = 0.5;
+
+    private static final int MAX_HEALTH = 1;
+    private static final double MAX_RADIUS = 9.0;
+
+    public Enemy1(Coordinate coordinate, Coordinate velocity) {
+        super(coordinate, velocity, ACTIVE, MAX_RADIUS, MAX_HEALTH);
+    }
+
+    public static int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    public static double getMaxRadius() {
+        return MAX_RADIUS;
     }
 
     @Override
@@ -20,30 +32,30 @@ public class Enemy1 extends Enemy {
     @Override
     public boolean shouldShoot() {
         if (getState() != ACTIVE) return false;
-        
+
         double middleStart = GameLib.HEIGHT * (1 - SHOOTING_HEIGHT_RATIO) / 2;
         double middleEnd = GameLib.HEIGHT - middleStart;
         return getY() > middleStart && getY() < middleEnd;
     }
 
-
+    @Override
     public void update(long delta) {
-        if (getState() == States.EXPLODING) {
-            if (System.currentTimeMillis() > getExplosionEnd()) 
-                setState(States.INACTIVE);
-        } 
-        if (getState() == States.ACTIVE) {
-       
+        if (getState() == EXPLODING) {
+            if (System.currentTimeMillis() > getExplosionEnd())
+                setState(INACTIVE);
+        }
+
+        if (getState() == ACTIVE) {
             setX(getX() + getVx() * delta);
             setY(getY() + getVy() * delta);
-        
+
             if (getY() > GameLib.HEIGHT + SCREEN_BOTTOM_PADDING) {
                 setState(INACTIVE);
             }
         }
     }
 
-    public boolean shouldSpawn(long currentTime){
+    public boolean shouldSpawn(long currentTime) {
         return false;
     }
 }

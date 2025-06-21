@@ -13,15 +13,17 @@ public class ShrinkPowerUp extends PowerUp
 
 
     public void onCollected(Player player)
-    {
-        setStartTime(System.currentTimeMillis());
-        player.setRadius(player.getRadius() / 2.0);
-        setState(States.EXPLODING);
+    {   
+        if(player.getRadius() > player.getMinRadius()) {
+            setStartTime(System.currentTimeMillis());
+            player.setRadius(player.getRadius() / 2.0);
+            setState(States.EXPLODING);
+        }
     }
 
     public void update(Player player) {
         if(startTime + 7000 <= System.currentTimeMillis() && getState() == States.EXPLODING)
-        {
+        {   
             player.setRadius(player.getRadius() * 2.0);
             this.setState(States.INACTIVE);
         }

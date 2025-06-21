@@ -1,51 +1,73 @@
 package entities;
-import utils.*;
-import entities.interfaces.*;
 
-public class Projectiles extends Entity implements ICollidable{
+import entities.interfaces.*;
+import utils.*;
+
+public class Projectiles extends Entity implements ICollidable {
+
     // Tipos de projéteis
     public static final int PLAYER_PROJECTILE = 1;
     public static final int ENEMY_PROJECTILE = 2;
 
+    // Constantes encapsuladas
+    private static final double PLAYER_RADIUS = 2.0;
+    private static final int PLAYER_DAMAGE = 1;
+
+    private static final double ENEMY_RADIUS = 2.0;
+    private static final int ENEMY_DAMAGE = 1;
+
+    // Para projéteis especiais (ex: boss)
+    private static final double BOSS_PROJECTILE_RADIUS = 10.0;
+    private static final int BOSS_PROJECTILE_DAMAGE = 3;
+
     private int type;
     private int damage;
 
+    public Projectiles(Coordinate coordinate, Coordinate velocity, int type) {
+        super(coordinate, velocity, States.ACTIVE, getRadiusByType(type));
+        this.type = type;
+        this.damage = getDamageByType(type);
+    }
+
+    // Construtor alternativo para projéteis customizados (ex: do boss)
     public Projectiles(Coordinate coordinate, Coordinate velocity, double radius, int type, int damage) {
         super(coordinate, velocity, States.ACTIVE, radius);
         this.type = type;
         this.damage = damage;
     }
 
-    // Métodos específicos de Projectiles
-    public boolean outOfBounds() {
-        if (type == PLAYER_PROJECTILE) {
-            return getY() < 0;
-        } else {
-            return getY() > GameLib.HEIGHT;
+    private static double getRadiusByType(int type) {
+        switch (type) {
+            case PLAYER_PROJECTILE: return PLAYER_RADIUS;
+            case ENEMY_PROJECTILE: return ENEMY_RADIUS;
+            default: return 2.0;
         }
     }
 
-    public void  update(long delta) {
-        if (getState() == States.INACTIVE) {
-            return;
+    private static int getDamageByType(int type) {
+        switch (type) {
+            case PLAYER_PROJECTILE: return PLAYER_DAMAGE;
+            case ENEMY_PROJECTILE: return ENEMY_DAMAGE;
+            default: return 1;
         }
-        
-        // Atualiza posição
+    }
+
+    public void update(long delta) {
+        if (getState() == States.INACTIVE) return;
+
         setX(getX() + getVx() * delta);
         setY(getY() + getVy() * delta);
 
-        // Verifica se saiu da tela
-        if (outOfBounds()) {
-            setState(States.INACTIVE);
-            return;
-        }
+        if (outOfBounds()) setState(States.INACTIVE);
+    }
 
-        return;
+    public boolean outOfBounds() {
+        return (type == PLAYER_PROJECTILE && getY() < 0) ||
+               (type != PLAYER_PROJECTILE && getY() > GameLib.HEIGHT);
     }
 
     public int calculateDamage(Entity other) {
-        // Lógica de cálculo de dano pode ser implementada aqui
-        return damage;  // Retorna o dano base por padrão
+        return damage;
     }
 
     public int getType() {

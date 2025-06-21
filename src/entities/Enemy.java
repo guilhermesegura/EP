@@ -1,6 +1,5 @@
 package entities;
 import utils.*;
-import entities.interfaces.*;
 
 public abstract class Enemy extends ExplodableEntity{
     protected static final long DEFAULT_SHOOT_COOLDOWN = 1000; 
