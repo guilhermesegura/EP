@@ -15,7 +15,7 @@ public class GameOverGraphics {
         drawTextWithLines("GAME OVER", GameLib.WIDTH/2, GameLib.HEIGHT/2 - 50, 5, Color.RED);
         
         // Instruções
-        drawTextWithLines("PRESSIONE CTRL PARA REINICIAR", GameLib.WIDTH/2, GameLib.HEIGHT/2 + 50, 2, Color.WHITE);
+        drawTextWithLines("PRESSIONE ENTER PARA REINICIAR", GameLib.WIDTH/2, GameLib.HEIGHT/2 + 50, 2, Color.WHITE);
         drawTextWithLines("ESC PARA SAIR", GameLib.WIDTH/2, GameLib.HEIGHT/2 + 80, 2, Color.WHITE);
     }
     

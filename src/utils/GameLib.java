@@ -39,6 +39,7 @@ public class GameLib {
 	public static final int KEY_RIGHT = 3;
 	public static final int KEY_CONTROL = 4;
 	public static final int KEY_ESCAPE = 5;
+	public static final int KEY_ENTER = 6;
 
 	private static MyFrame frame = null;
 	private static Graphics g = null;
@@ -215,7 +216,8 @@ class MyKeyAdapter extends KeyAdapter{
 					KeyEvent.VK_LEFT,
 					KeyEvent.VK_RIGHT, 
 					KeyEvent.VK_CONTROL,
-					KeyEvent.VK_ESCAPE
+					KeyEvent.VK_ESCAPE,
+					KeyEvent.VK_ENTER
 				};
 	
 	private boolean [] keyStates = null;

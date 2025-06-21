@@ -21,7 +21,7 @@ public class Boss2Graphics {
     private static void drawDragon(Boss2 boss, long currentTime) {
         double x = boss.getX();
         double y = boss.getY();
-        double r = boss.getRadius();
+        double r = 30;
         
         // Efeito de pulsação
         double pulse = 1.0 + 0.05 * Math.sin(currentTime * 0.005);

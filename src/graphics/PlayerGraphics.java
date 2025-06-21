@@ -7,6 +7,7 @@ import utils.States;
 
 public class PlayerGraphics {
     public static void draw(Player player, Color color, long currentTime) {
+        if(player.getState() == States.INACTIVE) return;
         // Draw player or explosion
         if(player.getState() == States.EXPLODING) {
             double alpha = (currentTime - player.getExplosionStart()) / 

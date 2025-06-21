@@ -3,7 +3,7 @@ package entities;
 import entities.interfaces.*;
 import utils.*;
 
-public class Player extends ExplodableEntity implements ICollidable {
+public class Player extends ExplodableEntity implements ICollidable, IPlayerCoord {
 
     private long nextShot;
     private long lastHitTime;

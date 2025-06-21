@@ -58,7 +58,7 @@ public class Game {
             // Lógica de Game Over
             if (gameOver) {
                 // Verifica se o jogador quer reiniciar
-                if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
+                if (GameLib.iskeyPressed(GameLib.KEY_ENTER)) {
                     gameOver = false;
                     // Reinicia o jogo
                     player = new Player(
@@ -175,17 +175,17 @@ public class Game {
             
             // Spawn boss
             if (currentTime > nextBoss && boss == null) {
-                boolean spawnBoss2 = Math.random() < 0.5;
+                boolean spawnBoss2 = Math.random() < 1;
                 
                 if (spawnBoss2) {
                     boss = new Boss2(
                         new Coordinate(GameLib.WIDTH / 2.0, -50.0),
-                        new Coordinate(0.1, 0.05)
+                        new Coordinate(0.1, 0.05), 20, player
                     );
                 } else {
                     boss = new Boss(
                         new Coordinate(GameLib.WIDTH / 2.0, -50.0),
-                        new Coordinate(0.1, 0.05)
+                        new Coordinate(0.1, 0.05), 30
                     );
                 }
                 nextBoss = Long.MAX_VALUE;
@@ -247,9 +247,8 @@ public class Game {
             background1.setColor(Color.GRAY);
             background1.fillBakcGround(delta);
 
-            if (player.getState() == States.ACTIVE) {
-                PlayerGraphics.draw(player, Color.BLUE, currentTime);
-            }
+            PlayerGraphics.draw(player, Color.BLUE, currentTime);
+            
 
             ProjectileGraphics.projectiles(playerProjectiles, Color.GREEN);
             ProjectileGraphics.ballProjectiles(enemyProjectiles, Color.RED, 2.0);

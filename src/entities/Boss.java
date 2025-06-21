@@ -6,13 +6,14 @@ import utils.States;
 public class Boss extends Enemy {
 
     private long lastAttackTime;
-    private long attackCooldown = 2000; // 2 seconds
+    long attackCooldown = 2000; // 2 seconds
     private int attackPattern = 0;
     private static final int MAX_HEALTH = 100;
     private static final double MAX_RADIUS = 30.0;
+    private static boolean shouldSpawn = true;
 
-    public Boss(Coordinate coordinate, Coordinate velocity) {
-        super(coordinate, velocity, States.ACTIVE, MAX_RADIUS, MAX_HEALTH);
+    public Boss(Coordinate coordinate, Coordinate velocity, double r) {
+        super(coordinate, velocity, States.ACTIVE, r, MAX_HEALTH);
         this.lastAttackTime = System.currentTimeMillis();
     }
 
@@ -104,6 +105,12 @@ public class Boss extends Enemy {
             setHealth(0);
             explosion(System.currentTimeMillis());
             setState(States.INACTIVE);
+            shouldSpawn = false;
         }
+    }
+
+    public void setAttackCooldown(long l)
+    {
+        attackCooldown = l;
     }
 }

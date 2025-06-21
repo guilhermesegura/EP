@@ -27,7 +27,7 @@ public class ProjectileGraphics {
             if(projectile.getState() == States.ACTIVE)
             {
                 GameLib.setColor(color);
-				GameLib.drawCircle(projectile.getX(), projectile.getY(), radius);
+				GameLib.drawCircle(projectile.getX(), projectile.getY(), projectile.getRadius());
             }
         }
     }
