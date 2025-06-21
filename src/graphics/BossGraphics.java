@@ -8,8 +8,8 @@ public class BossGraphics {
 
     public static void boss(Boss boss, long currentTime) {
         if(boss.getState() == States.ACTIVE) {
-            drawBoss(boss);
             drawHealthBar(boss);
+            drawBoss(boss);
         }
         else if(boss.getState() == States.EXPLODING) {
             double alpha = (currentTime - boss.getExplosionStart()) / (boss.getExplosionEnd() - boss.getExplosionStart());

@@ -89,11 +89,17 @@ public class Boss extends Enemy {
         return size;
     }
 
-    public void takeDamage(int damage) {
+    @Override
+    public void takeDamage(double damage) {
+        // Garante que o chefe só tome dano se estiver ativo
+        if (getState() != States.ACTIVE) return;
+
         this.currentHealth -= damage;
         if (this.currentHealth <= 0) {
             this.currentHealth = 0;
-            setState(States.INACTIVE);
+            // Ao invés de setar o estado para INACTIVE, 
+            // chama o método de explosão que já gerencia o estado corretamente.
+            explosion(System.currentTimeMillis());
         }
     }
 }
