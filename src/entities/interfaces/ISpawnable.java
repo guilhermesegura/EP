@@ -1,4 +1,4 @@
-package entities;
+package entities.interfaces;
 
 public interface ISpawnable {
     boolean shouldSpawn(long currentTime);

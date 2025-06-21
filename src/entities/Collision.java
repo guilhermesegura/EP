@@ -1,5 +1,8 @@
 package entities;
+
 import utils.*;
+import entities.interfaces.*;
+
 
 public class Collision{
     

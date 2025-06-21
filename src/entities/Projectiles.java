@@ -1,5 +1,6 @@
 package entities;
 import utils.*;
+import entities.interfaces.*;
 
 public class Projectiles extends Entity implements ICollidable{
     // Tipos de projéteis

@@ -1,4 +1,4 @@
-package entities;
+package entities.interfaces;
 
 public interface IExplodable {
     public double getExplosionStart();

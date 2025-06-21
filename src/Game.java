@@ -1,8 +1,5 @@
 import entities.*;
-import graphics.BackGroundGraphics;
-import graphics.EnemyGraphics;
-import graphics.PlayerGraphics;
-import graphics.ProjectileGraphics;
+import graphics.*;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +25,7 @@ public class Game {
         List<Projectiles> playerProjectiles = new ArrayList<>();
         List<Projectiles> enemyProjectiles = new ArrayList<>();
         List<Enemy> enemies = new ArrayList<>();
+        List<PowerUp> powerUps = new ArrayList<>();
 
         // Componentes gráficos de fundo
         BackGroundGraphics background1 = new BackGroundGraphics(0.070, 20);
@@ -102,7 +100,7 @@ public class Game {
                     new Coordinate(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0),
                     new Coordinate(0.0, 0.20 + Math.random() * 0.15), 
                     States.ACTIVE,
-                    9.0
+                    9.0, 1
                 ));
                 nextEnemy1 = currentTime + 1000;
             }
@@ -112,7 +110,7 @@ public class Game {
                     new Coordinate(enemy2_spawnX, -10.0),
                     new Coordinate(0.42, 0.42),
                     States.ACTIVE,
-                    12.0
+                    12.0, 1
                 ));
                 enemy2_count++;
                 if (enemy2_count < 10) {
@@ -130,9 +128,26 @@ public class Game {
                 for (Enemy e : enemies) {
                     if (Collision.VerifyColision(p, e)) {
                         e.explosion(currentTime);
+                        PowerUp pw = e.maybeSpawnPowerUp(e.getX(), e.getY());
+                        if(pw != null)
+                        {
+                            powerUps.add(pw);
+                        }
                         p.setState(States.INACTIVE);
                     }
                 }
+            }
+
+            for(PowerUp pw: powerUps)
+            {
+                if(pw instanceof ShrinkPowerUp) 
+                {
+                    ShrinkPowerUp pw1 = (ShrinkPowerUp) pw;
+                    pw1.update(player);
+                }
+                pw.update(delta);
+               
+                if(Collision.VerifyColision(pw, player)) pw.onCollected(player);
             }
 
             // Projéteis inimigos com jogador e Inimigos com jogador
@@ -154,6 +169,7 @@ public class Game {
             playerProjectiles.removeIf(p -> p.getState() == States.INACTIVE);
             enemyProjectiles.removeIf(p -> p.getState() == States.INACTIVE);
             enemies.removeIf(e -> e.getState() == States.INACTIVE);
+            powerUps.removeIf(e -> e.getState() == States.INACTIVE);
 
             // --- 6. Desenho da Cena ---
             background2.setColor(Color.DARK_GRAY);
@@ -165,6 +181,7 @@ public class Game {
             ProjectileGraphics.projectiles(playerProjectiles, Color.GREEN);
             ProjectileGraphics.ballProjectiles(enemyProjectiles, Color.RED, 2.0);
             EnemyGraphics.enemy(currentTime, enemies, Color.CYAN, 9.0);
+            PowerUpGraphics.drawPowerUps(currentTime, powerUps, 5.0);
 
             GameLib.display();
 

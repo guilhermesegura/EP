@@ -1,6 +1,7 @@
 package entities;
 
 import utils.*;
+import entities.interfaces.*;
 
 public class Player extends ExplodableEntity implements ICollidable {
 
@@ -8,7 +9,7 @@ public class Player extends ExplodableEntity implements ICollidable {
 
     public Player(Coordinate coordinate, Coordinate velocity, double radius)
     {
-        super(coordinate, velocity, States.ACTIVE, radius);
+        super(coordinate, velocity, States.ACTIVE, radius, 3);
         nextShot = System.currentTimeMillis();
     }
 
@@ -42,4 +43,5 @@ public class Player extends ExplodableEntity implements ICollidable {
     {
         nextShot = currentTime + 100;
     }
+
 }

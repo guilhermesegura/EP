@@ -1,4 +1,4 @@
-package entities;
+package entities.interfaces;
 
 import utils.Coordinate;
 import utils.States;

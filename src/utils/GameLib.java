@@ -151,6 +151,12 @@ public class GameLib {
 		
 		g.fillRect(x, y, (int) Math.round(width), (int) Math.round(height));
 	}
+
+		public static void drawRect(double x, double y, double width, double height){
+			
+    	g.drawRect((int) Math.round(x), (int) Math.round(y), (int) Math.round(width), (int) Math.round(height));
+	
+	}
 	
 	public static void display(){
 
@@ -280,5 +286,6 @@ class MyKeyAdapter extends KeyAdapter{
 		
 		System.out.println(" }");
 	}
+
 }
 

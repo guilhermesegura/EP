@@ -1,6 +1,7 @@
 package entities;
 import utils.*;
 import static utils.States.*;
+import entities.interfaces.*;
 
 public class Enemy2 extends Enemy {
     private static final double SCREEN_PADDING = 10.0;
@@ -18,8 +19,8 @@ public class Enemy2 extends Enemy {
     private double previousY;
     private boolean passedThreshold;
 
-    public Enemy2(Coordinate coordinate, Coordinate velocity, States state, double radius) {
-        super(coordinate, velocity, state, radius);
+    public Enemy2(Coordinate coordinate, Coordinate velocity, States state, double radius, int health) {
+        super(coordinate, velocity, state, radius, health);
         this.readyToShoot = false;
         this.passedThreshold = false;
     }
@@ -85,27 +86,5 @@ public class Enemy2 extends Enemy {
 
     public void setReadyToShoot(boolean ready) {
         this.readyToShoot = ready;
-    }
-
-
-    @Override
-    public void spawn(long currentTime) {
-        setX(spawnX);
-        setY(-10.0);
-        setVx(0.42);
-        setVy(0);
-        setAngle((3 * Math.PI) / 2);
-        setRotationalVelocity(0.0);
-        setState(States.ACTIVE);
-        
-        spawnCount++;
-        
-        if(spawnCount < 10) {
-            updateSpawnTimer(currentTime + 120);
-        } else {
-            spawnCount = 0;
-            spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-            updateSpawnTimer(currentTime + 3000 + (long)(Math.random() * 3000));
-        }
-    }    
+    }   
 }

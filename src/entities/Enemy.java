@@ -1,20 +1,17 @@
 package entities;
 import utils.*;
+import entities.interfaces.*;
 
-public abstract class Enemy extends ExplodableEntity implements ISpawnable{
+public abstract class Enemy extends ExplodableEntity{
     protected static final long DEFAULT_SHOOT_COOLDOWN = 1000; 
-    protected static final long DEFAULT_SPAWN_COOLDOWN = 2000;
     
     protected long nextShotTime;
     protected double angle;
     protected double rotationalVelocity;  
-    protected int spawnCount = 0;
-    protected long nextSpawnTime;
 
-    public Enemy(Coordinate coordinate, Coordinate velocity, States state, double radius)  {
-        super(coordinate, velocity, state, radius);
+    public Enemy(Coordinate coordinate, Coordinate velocity, States state, double radius, int health)  {
+        super(coordinate, velocity, state, radius, health);
         this.nextShotTime = System.currentTimeMillis() + DEFAULT_SHOOT_COOLDOWN;
-        this.nextSpawnTime = System.currentTimeMillis() + DEFAULT_SPAWN_COOLDOWN;
         this.angle = (3 * Math.PI) / 2.0;
     }
 
@@ -47,16 +44,21 @@ public abstract class Enemy extends ExplodableEntity implements ISpawnable{
 
     public abstract boolean shouldShoot();
 
-    @Override
-    public boolean shouldSpawn(long currentTime){
-        return currentTime > nextSpawnTime;
+    public PowerUp maybeSpawnPowerUp(double x, double y) {
+        if (Math.random() < 0.15) {  // 15% de chance de spawn
+
+            double speedY = 0.1;
+            Coordinate coord = new Coordinate(x, y);
+            Coordinate velocity = new Coordinate(0, speedY);
+
+            // Decide entre os dois tipos de power up
+            if (Math.random() < 0.5) {
+                return new IncreaseLifePowerUp(coord, velocity, 10.0);
+            } else {
+                return new ShrinkPowerUp(coord, velocity, 10.0);
+            }
+        }
+        return null;
     }
 
-    @Override
-    public void updateSpawnTimer(long currentTime) {
-        this.nextSpawnTime = currentTime + DEFAULT_SPAWN_COOLDOWN;
-    }
-    
-    @Override
-    public abstract void spawn(long currentTime);
 }

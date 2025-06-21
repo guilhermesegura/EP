@@ -1,5 +1,6 @@
 package entities;
 import utils.*;
+import entities.interfaces.*;
 
 public abstract class Entity implements IEntity {
 
