@@ -41,7 +41,7 @@ public class Boss extends Enemy {
     }
 
     public boolean canAttack() {
-        return System.currentTimeMillis() - lastAttackTime > attackCooldown;
+        return System.currentTimeMillis() - lastAttackTime > attackCooldown && getState() == States.ACTIVE;
     }
 
     public void performAttack(java.util.List<Projectiles> enemyProjectiles) {
@@ -103,6 +103,7 @@ public class Boss extends Enemy {
         if (getHealth() <= 0) {
             setHealth(0);
             explosion(System.currentTimeMillis());
+            setState(States.INACTIVE);
         }
     }
 }
