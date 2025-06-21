@@ -8,6 +8,8 @@ import utils.GameLib;
 import utils.States;
 
 public class Game {
+    private static boolean gameOver = false;
+    
     public static void main(String[] args) {
         // Game loop control
         boolean running = true;
@@ -36,7 +38,7 @@ public class Game {
         // Enemy spawn timers
         long nextEnemy1 = currentTime + 2000;
         long nextEnemy2 = currentTime + 7000;
-        long nextBoss = currentTime + 10000; // Boss spawns after 30 seconds
+        long nextBoss = currentTime + 10000;
         double enemy2_spawnX = GameLib.WIDTH * 0.20;
         int enemy2_count = 0;
 
@@ -53,7 +55,42 @@ public class Game {
                 running = false;
             }
             
+            // Lógica de Game Over
+            if (gameOver) {
+                // Verifica se o jogador quer reiniciar
+                if (GameLib.iskeyPressed(GameLib.KEY_CONTROL)) {
+                    gameOver = false;
+                    // Reinicia o jogo
+                    player = new Player(
+                        new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
+                        new Coordinate(0.25, 0.25)        
+                    );
+                    playerProjectiles.clear();
+                    enemyProjectiles.clear();
+                    enemies.clear();
+                    powerUps.clear();
+                    boss = null;
+                    nextEnemy1 = currentTime + 2000;
+                    nextEnemy2 = currentTime + 7000;
+                    nextBoss = currentTime + 10000;
+                    enemy2_count = 0;
+                }
+                
+                // Mostra tela de Game Over
+                GameOverGraphics.drawGameOver();
+                GameLib.display();
+                continue; // Pula o resto do loop
+            }
+            
+            // Atualização do jogador
             player.update(delta);
+
+            // Verifica se o jogador morreu
+            if (player.getHealth() <= 0) {
+                gameOver = true;
+                player.setState(States.INACTIVE);
+                continue;
+            }
 
             if (GameLib.iskeyPressed(GameLib.KEY_CONTROL) && currentTime > player.getNextShot()) {
                 playerProjectiles.add(new Projectiles(
@@ -138,15 +175,23 @@ public class Game {
             
             // Spawn boss
             if (currentTime > nextBoss && boss == null) {
-                boss = new Boss(
-                    new Coordinate(GameLib.WIDTH / 2.0, -50.0),
-                    new Coordinate(0.1, 0.05)
-                );
+                boolean spawnBoss2 = Math.random() < 0.5;
+                
+                if (spawnBoss2) {
+                    boss = new Boss2(
+                        new Coordinate(GameLib.WIDTH / 2.0, -50.0),
+                        new Coordinate(0.1, 0.05)
+                    );
+                } else {
+                    boss = new Boss(
+                        new Coordinate(GameLib.WIDTH / 2.0, -50.0),
+                        new Coordinate(0.1, 0.05)
+                    );
+                }
                 nextBoss = Long.MAX_VALUE;
             }
 
             // 4. Check collisions
-            // Player projectiles with enemies and boss
             for (Projectiles p : playerProjectiles) {
                 for (Enemy e : enemies) {
                     if (Collision.VerifyColision(p, e)) {
@@ -165,7 +210,6 @@ public class Game {
                 }
             }
 
-            // Power-ups with player
             for(PowerUp pw : powerUps) {
                 if(pw instanceof ShrinkPowerUp) {
                     ShrinkPowerUp pw1 = (ShrinkPowerUp) pw;
@@ -174,21 +218,20 @@ public class Game {
                 if(Collision.VerifyColision(pw, player)) pw.onCollected(player);
             }
 
-            // Enemy projectiles, enemies and boss with player
             if (player.getState() == States.ACTIVE) {
                 for (Projectiles p : enemyProjectiles) {
                     if (Collision.VerifyColision(p, player)) {
-                        player.takeDamage(1); // Remove one heart
+                        player.takeDamage(1);
                         p.setState(States.INACTIVE);
                     }
                 }
                 for (Enemy e : enemies) {
                     if (Collision.VerifyColision(e, player)) {
-                        player.takeDamage(1); // Remove one heart
+                        player.takeDamage(1);
                     }
                 }
                 if (boss != null && boss.getState() == States.ACTIVE && Collision.VerifyColision(boss, player)) {
-                    player.takeDamage(1); // Remove one heart
+                    player.takeDamage(1);
                 }
             }
 
@@ -204,19 +247,25 @@ public class Game {
             background1.setColor(Color.GRAY);
             background1.fillBakcGround(delta);
 
-            PlayerGraphics.draw(player, Color.BLUE, currentTime);
+            if (player.getState() == States.ACTIVE) {
+                PlayerGraphics.draw(player, Color.BLUE, currentTime);
+            }
+
             ProjectileGraphics.projectiles(playerProjectiles, Color.GREEN);
             ProjectileGraphics.ballProjectiles(enemyProjectiles, Color.RED, 2.0);
             EnemyGraphics.enemy(currentTime, enemies, Color.CYAN, 9.0);
             PowerUpGraphics.drawPowerUps(currentTime, powerUps, 5.0);
             
             if (boss != null) {
-                BossGraphics.boss(boss, currentTime);
+                if (boss instanceof Boss2) {
+                    Boss2Graphics.drawBoss2((Boss2) boss, currentTime);
+                } else {
+                    BossGraphics.boss(boss, currentTime);
+                }
             }
 
             GameLib.display();
 
-            // Maintain frame rate
             try {
                 Thread.sleep(3);
             } catch (InterruptedException e) {
