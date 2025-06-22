@@ -3,6 +3,7 @@ import graphics.*;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import utils.Coordinate;
 import utils.GameLib;
@@ -15,63 +16,57 @@ public class Game {
     private static int currentLevelIndex = 0;
     private static long levelStartTime;
     private static Loader gameLoader;
+
+    // --- Início: Variáveis de estado para o spawn do Inimigo 2 ---
+    private static boolean isSpawningEnemy2Squad = false;
+    private static int enemy2SquadCount = 0;
+    private static long nextEnemy2SquadSpawnTime = 0;
+    private static double enemy2SquadSpawnX = 0;
+    // --- Fim: Variáveis de estado ---
     
     public static void main(String[] args) {
-        // Game loop control
         boolean running = true;
         long currentTime = System.currentTimeMillis();
         long delta;
 
         try {
-            // Carrega a configuração do jogo
+            // O caminho do arquivo foi ajustado para refletir a estrutura do projeto
             gameLoader = new Loader("EP/src/game/game_config.txt");
         } catch (IOException e) {
             System.err.println("Erro ao carregar configuração do jogo: " + e.getMessage());
             return;
         }
 
-        // Player setup
         Player player = new Player(
             new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
             new Coordinate(0.25, 0.25)        
         );
         player.setHealth(gameLoader.getPlayerLife());
 
-        // Entity lists
         List<Projectiles> playerProjectiles = new ArrayList<>();
         List<Projectiles> enemyProjectiles = new ArrayList<>();
         List<Enemy> enemies = new ArrayList<>();
         List<PowerUp> powerUps = new ArrayList<>();
         
-        // Boss object
         Boss boss = null;
 
-        // Background graphics
         BackGroundGraphics background1 = new BackGroundGraphics(0.070, 20);
         BackGroundGraphics background2 = new BackGroundGraphics(0.045, 50);
 
-        // Initialize graphics
         GameLib.initGraphics();
-
-        // Inicia a primeira fase
         startLevel(currentLevelIndex, currentTime);
 
-        // Main game loop
         while (running) {
             delta = System.currentTimeMillis() - currentTime;
             currentTime = System.currentTimeMillis();
 
-            // 1. Handle user input
             if (GameLib.iskeyPressed(GameLib.KEY_ESCAPE)) {
                 running = false;
             }
             
-            // Lógica de Game Over
             if (gameOver) {
-                // Verifica se o jogador quer reiniciar
                 if (GameLib.iskeyPressed(GameLib.KEY_ENTER)) {
                     gameOver = false;
-                    // Reinicia o jogo
                     player = new Player(
                         new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
                         new Coordinate(0.25, 0.25)        
@@ -86,17 +81,14 @@ public class Game {
                     startLevel(currentLevelIndex, currentTime);
                 }
                 
-                // Mostra tela de Game Over
                 GameOverGraphics.drawGameOver();
                 GameLib.display();
-                continue; // Pula o resto do loop
+                continue;
             }
             
-            // Verifica se o nível foi completado
             if (levelCompleted) {
                 currentLevelIndex++;
                 if (currentLevelIndex < gameLoader.getLevels().size()) {
-                    // Próxima fase
                     startLevel(currentLevelIndex, currentTime);
                     playerProjectiles.clear();
                     enemyProjectiles.clear();
@@ -105,7 +97,6 @@ public class Game {
                     boss = null;
                     levelCompleted = false;
                 } else {
-                    // Fim do jogo (vitória)
                     GameLib.display();
                     continue;
                 }
@@ -114,14 +105,12 @@ public class Game {
             player.update(delta);
             player.shoot(currentTime, playerProjectiles);
             
-            // Verifica se o jogador morreu
             if (player.getHealth() <= 0) {
                 gameOver = true;
                 player.setState(States.INACTIVE);
                 continue;
             }
 
-            // 2. Update entities
             for (Projectiles projectile : playerProjectiles) projectile.update(delta);
             for (Projectiles projectile : enemyProjectiles) projectile.update(delta);
             for (PowerUp pw : powerUps) pw.update(delta);
@@ -135,23 +124,27 @@ public class Game {
                 boss.update(delta);
                 boss.shoot(currentTime, enemyProjectiles);
                 
-                // Verifica se o chefe foi derrotado
                 if (boss.getHealth() <= 0) {
                     boss.explosion(currentTime);
                     levelCompleted = true;
                 }
             }
 
-            // 3. Processar eventos de spawn da fase atual
-            processSpawnEvents(currentTime, enemies, boss, player);
+            Boss newBoss = processSpawnEvents(currentTime, enemies, player);
+            if (newBoss != null) {
+                boss = newBoss;
+            }
 
-            // 4. Check collisions
+            // --- Adicionado: Chamada para o novo método de spawn ---
+            handleEnemy2SquadSpawning(currentTime, enemies);
+            // --- Fim da adição ---
+
             for (Projectiles p : playerProjectiles) {
                 for (Enemy e : enemies) {
                     if (Collision.VerifyColision(p, e)) {
                         e.explosion(currentTime);
                         PowerUp pw = e.maybeSpawnPowerUp(e.getX(), e.getY());
-                        if(pw != null) {
+                        if (pw != null) {
                             powerUps.add(pw);
                         }
                         p.setState(States.INACTIVE);
@@ -164,12 +157,13 @@ public class Game {
                 }
             }
 
-            for(PowerUp pw : powerUps) {
-                if(pw instanceof ShrinkPowerUp) {
-                    ShrinkPowerUp pw1 = (ShrinkPowerUp) pw;
-                    pw1.update(player);
+            for (PowerUp pw : powerUps) {
+                if (pw instanceof ShrinkPowerUp) {
+                    ((ShrinkPowerUp) pw).update(player);
                 }
-                if(Collision.VerifyColision(pw, player)) pw.onCollected(player);
+                if (Collision.VerifyColision(pw, player)) {
+                    pw.onCollected(player);
+                }
             }
 
             if (player.getState() == States.ACTIVE) {
@@ -194,7 +188,6 @@ public class Game {
             enemies.removeIf(e -> e.getState() == States.INACTIVE);
             powerUps.removeIf(e -> e.getState() == States.INACTIVE);
 
-            // Renderização
             background2.setColor(Color.DARK_GRAY);
             background2.fillBakcGround(delta);
             background1.setColor(Color.GRAY);
@@ -230,17 +223,14 @@ public class Game {
         levelStartTime = currentTime;
         levelCompleted = false;
 
-        // Pega o nível atual
+        // Reseta o estado do esquadrão ao iniciar um novo nível
+        isSpawningEnemy2Squad = false;
+        enemy2SquadCount = 0;
+
         Level currentLevel = gameLoader.getLevels().get(levelIndex);
-
-        // Reseta o status de todos os eventos de spawn desse nível
-        for (SpawnEvent event : currentLevel.getEvents()) {
-            event.setSpawned(false);
-        }
-
-        // Mostra uma tela de "Início de Fase"
+        
         long messageStartTime = System.currentTimeMillis();
-        long displayDuration = 2000;  // Exibir por 2 segundos
+        long displayDuration = 2000;
 
         while (System.currentTimeMillis() - messageStartTime < displayDuration) {
             GameLib.clear();
@@ -255,47 +245,73 @@ public class Game {
         }
     }
 
-    private static void processSpawnEvents(long currentTime, List<Enemy> enemies, Boss boss, Player player) {
+    private static Boss processSpawnEvents(long currentTime, List<Enemy> enemies, Player player) {
         long levelTime = currentTime - levelStartTime;
         Level currentLevel = gameLoader.getLevels().get(currentLevelIndex);
         
-        for (SpawnEvent event : currentLevel.getEvents()) {
-            // Verifica se é hora de spawnar este evento e se ainda não foi spawnado
-            if (levelTime >= event.getTime() && !event.isSpawned()) {
+        Iterator<SpawnEvent> iterator = currentLevel.getEvents().iterator();
+        while (iterator.hasNext()) {
+            SpawnEvent event = iterator.next();
+            
+            if (levelTime >= event.getTime()) {
                 if (event.getType() == SpawnEvent.Type.INIMIGO) {
-                    // Spawn de inimigo comum
-                    Enemy enemy;
                     if (event.getEntityType() == 1) {
-                        enemy = new Enemy1(
+                        enemies.add(new Enemy1(
                             new Coordinate(event.getX(), event.getY()),
                             new Coordinate(0.0, 0.20 + Math.random() * 0.15)
-                        );
-                    } else { // tipo 2
-                        enemy = new Enemy2(
-                            new Coordinate(event.getX(), event.getY()),
-                            new Coordinate(0.42, 0.42)
-                        );
+                        ));
+                    } else if (event.getEntityType() == 2) {
+                        // --- Modificado: Apenas inicia o processo de spawn do esquadrão ---
+                        if (!isSpawningEnemy2Squad) { // Evita reativar se já estiver em andamento
+                            isSpawningEnemy2Squad = true;
+                            enemy2SquadCount = 0;
+                            enemy2SquadSpawnX = event.getX();
+                            nextEnemy2SquadSpawnTime = currentTime;
+                        }
                     }
-                    enemies.add(enemy);
                 } else if (event.getType() == SpawnEvent.Type.CHEFE) {
-                    // Spawn de chefe
+                    Boss boss;
                     if (event.getEntityType() == 1) {
                         boss = new Boss(
                             new Coordinate(event.getX(), event.getY()),
                             new Coordinate(0.1, 0.05),
-                            event.getLife()
+                            30
+                            
                         );
-                    } else { // tipo 2
+                    } else {
                         boss = new Boss2(
                             new Coordinate(event.getX(), event.getY()),
                             new Coordinate(0.1, 0.05),
-                            event.getLife(),
+                            20,
                             player
                         );
                     }
+                    iterator.remove();
+                    return boss;
                 }
-                event.setSpawned(true);
+                iterator.remove();
+            }
+        }
+        return null;
+    }
+
+    // --- Início: Novo método para controlar o spawn do esquadrão Inimigo 2 ---
+    private static void handleEnemy2SquadSpawning(long currentTime, List<Enemy> enemies) {
+        if (isSpawningEnemy2Squad && currentTime > nextEnemy2SquadSpawnTime) {
+            if (enemy2SquadCount < 10) {
+                enemies.add(new Enemy2(
+                    new Coordinate(enemy2SquadSpawnX, -10.0),
+                    new Coordinate(0.42, 0.42)
+                ));
+                enemy2SquadCount++;
+                nextEnemy2SquadSpawnTime = currentTime + 120; // Próximo inimigo em 120ms
+            } else {
+                // Esquadrão completo, reseta o estado.
+                isSpawningEnemy2Squad = false;
+                enemy2SquadCount = 0;
+                // A posição do *próximo* esquadrão será definida pelo próximo evento do arquivo.
             }
         }
     }
+    // --- Fim: Novo método ---
 }

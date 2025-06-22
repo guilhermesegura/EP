@@ -38,7 +38,7 @@ public class Level {
                     int x = Integer.parseInt(parts[3]);
                     int y = Integer.parseInt(parts[4]);
 
-                    events.add(new SpawnEvent(SpawnEvent.Type.INIMIGO, type, time, x, y, 0));
+                    events.add(new SpawnEvent(SpawnEvent.Type.INIMIGO, type, time, x, y));
 
                 }else if (keyword.equalsIgnoreCase("CHEFE")){
                     if (parts.length != 6) throw new IllegalArgumentException("Linha de chefe mal formatada: " + line);
@@ -50,7 +50,7 @@ public class Level {
                     int x = Integer.parseInt(parts[4]);
                     int y = Integer.parseInt(parts[5]);
 
-                    events.add(new SpawnEvent(SpawnEvent.Type.CHEFE, type, time, x, y, life));
+                    events.add(new SpawnEvent(SpawnEvent.Type.CHEFE, type, time, x, y));
                     bossFound = true;
 
 

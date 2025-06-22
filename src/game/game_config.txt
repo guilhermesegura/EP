@@ -1,4 +1,4 @@
-100 
+5
 2
 EP/src/game/fase1.txt
 EP/src/game/fase2.txt
