@@ -82,9 +82,9 @@ public class Game {
                 continue; // Pula o resto do loop
             }
             
-            // Atualização do jogador
             player.update(delta);
-
+            player.shoot(currentTime, playerProjectiles);
+            
             // Verifica se o jogador morreu
             if (player.getHealth() <= 0) {
                 gameOver = true;
@@ -92,16 +92,7 @@ public class Game {
                 continue;
             }
 
-            if (GameLib.iskeyPressed(GameLib.KEY_CONTROL) && currentTime > player.getNextShot()) {
-                playerProjectiles.add(new Projectiles(
-                    new Coordinate(player.getX(), player.getY() - 2 * player.getRadius()),
-                    new Coordinate(0.0, -1.0),
-                    2.0,
-                    Projectiles.PLAYER_PROJECTILE,
-                    1
-                ));
-                player.shoot(currentTime);
-            }
+            
 
             // 2. Update entities
             for (Projectiles projectile : playerProjectiles) projectile.update(delta);
@@ -110,43 +101,12 @@ public class Game {
             
             for (Enemy enemy : enemies) {
                 enemy.update(delta);
-
-                if (enemy.shouldShoot()) {
-                    if (enemy instanceof Enemy1) {
-                        if (enemy.isShotCooldownOver(currentTime)) {
-                            enemy.resetShotCooldown(currentTime);
-                            enemyProjectiles.add(new Projectiles(
-                                new Coordinate(enemy.getX(), enemy.getY()),
-                                new Coordinate(0.0, 0.45),
-                                2.0,
-                                Projectiles.ENEMY_PROJECTILE,
-                                1
-                            ));
-                        }
-                    } else if (enemy instanceof Enemy2) {
-                        double[] angles = { Math.PI / 2 + Math.PI / 8, Math.PI / 2, Math.PI / 2 - Math.PI / 8 };
-                        for (double angle : angles) {
-                            double a = angle + Math.random() * Math.PI/6 - Math.PI/12;
-                            double vx = Math.cos(a) * 0.30;
-                            double vy = Math.sin(a) * 0.30;
-                            enemyProjectiles.add(new Projectiles(
-                                new Coordinate(enemy.getX(), enemy.getY()),
-                                new Coordinate(vx, vy),
-                                2.0,
-                                Projectiles.ENEMY_PROJECTILE,
-                                1
-                            ));
-                        }
-                    }
-                }
+                enemy.shoot(currentTime, enemyProjectiles);
             }
-            
-            // Boss logic
+
             if (boss != null) {
                 boss.update(delta);
-                if (boss.shouldShoot()) {
-                    boss.performAttack(enemyProjectiles);
-                }
+                boss.shoot(currentTime, enemyProjectiles);
             }
 
             // 3. Spawn entities
@@ -235,13 +195,12 @@ public class Game {
                 }
             }
 
-            // 5. Clean up inactive entities
             playerProjectiles.removeIf(p -> p.getState() == States.INACTIVE);
             enemyProjectiles.removeIf(p -> p.getState() == States.INACTIVE);
             enemies.removeIf(e -> e.getState() == States.INACTIVE);
             powerUps.removeIf(e -> e.getState() == States.INACTIVE);
 
-            // 6. Render scene
+
             background2.setColor(Color.DARK_GRAY);
             background2.fillBakcGround(delta);
             background1.setColor(Color.GRAY);

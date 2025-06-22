@@ -3,6 +3,8 @@ package entities;
 import utils.*;
 import static utils.States.*;
 
+import java.util.List;
+
 public class Enemy2 extends Enemy {
 
     private static final double SCREEN_PADDING = 10.0;
@@ -98,5 +100,24 @@ public class Enemy2 extends Enemy {
 
     public void setReadyToShoot(boolean ready) {
         this.readyToShoot = ready;
+    }
+
+    public void shoot(long currentTime, List<Projectiles> enemyProjectiles)
+    {
+        if (shouldShoot()) {
+            double[] angles = { Math.PI / 2 + Math.PI / 8, Math.PI / 2, Math.PI / 2 - Math.PI / 8 };
+            for (double angle : angles) {
+                double a = angle + Math.random() * Math.PI/6 - Math.PI/12;
+                double vx = Math.cos(a) * 0.30;
+                double vy = Math.sin(a) * 0.30;
+                enemyProjectiles.add(new Projectiles(
+                    new Coordinate(getX(), getY()),
+                    new Coordinate(vx, vy),
+                    2.0,
+                    Projectiles.ENEMY_PROJECTILE,
+                    1
+                ));
+            }
+        }
     }
 }

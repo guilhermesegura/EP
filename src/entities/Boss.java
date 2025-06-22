@@ -1,4 +1,6 @@
 package entities;
+import java.util.List;
+
 import utils.Coordinate;
 import utils.GameLib;
 import utils.States;
@@ -112,5 +114,12 @@ public class Boss extends Enemy {
     public void setAttackCooldown(long l)
     {
         attackCooldown = l;
+    }
+
+    public void shoot(long currentTime, List<Projectiles> enemyProjectiles)
+    {
+        if (shouldShoot()) {
+                    performAttack(enemyProjectiles);
+                }
     }
 }

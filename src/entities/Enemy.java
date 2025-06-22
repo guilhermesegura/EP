@@ -1,4 +1,6 @@
 package entities;
+import java.util.List;
+
 import utils.*;
 
 public abstract class Enemy extends ExplodableEntity{
@@ -59,5 +61,7 @@ public abstract class Enemy extends ExplodableEntity{
         }
         return null;
     }
+
+    public abstract void shoot(long currentTime, List<Projectiles> playerProjectiles);
 
 }

@@ -2,6 +2,7 @@ package entities;
 
 import entities.interfaces.*;
 import utils.*;
+import java.util.*;
 
 public class Player extends ExplodableEntity implements ICollidable, IPlayerCoord {
 
@@ -51,9 +52,7 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
         if (getY() >= GameLib.HEIGHT) setY(GameLib.HEIGHT - 1);
     }
 
-    public void shoot(long currentTime) {
-        nextShot = currentTime + 100;
-    }
+    
 
     @Override
     public void takeDamage(int damage) {
@@ -108,4 +107,18 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
     public boolean isInvulnerable() {
         return System.currentTimeMillis() < lastHitTime + invulnerabilityTime;
     }
+
+    public void shoot(long currentTime, List<Projectiles> playerProjectiles)
+    {
+        if (GameLib.iskeyPressed(GameLib.KEY_CONTROL) && currentTime > getNextShot()) {
+                playerProjectiles.add(new Projectiles(
+                    new Coordinate(getX(), getY() - 2 * getRadius()),
+                    new Coordinate(0.0, -1.0),
+                    2.0,
+                    Projectiles.PLAYER_PROJECTILE,
+                    1
+                ));
+                nextShot = currentTime + 100;
+    }
+}
 }

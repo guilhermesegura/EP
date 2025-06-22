@@ -3,6 +3,8 @@ package entities;
 import utils.*;
 import static utils.States.*;
 
+import java.util.List;
+
 public class Enemy1 extends Enemy {
 
     private static final double SCREEN_BOTTOM_PADDING = 10.0;
@@ -58,4 +60,22 @@ public class Enemy1 extends Enemy {
     public boolean shouldSpawn(long currentTime) {
         return false;
     }
+
+    public void shoot(long currentTime, List<Projectiles> enemyProjectiles)
+    {
+        if (shouldShoot()) {
+            if (isShotCooldownOver(currentTime)) {
+                resetShotCooldown(currentTime);
+                enemyProjectiles.add(new Projectiles(
+                    new Coordinate(getX(), getY()),
+                    new Coordinate(0.0, 0.45),
+                    2.0,
+                    Projectiles.ENEMY_PROJECTILE,
+                    1
+                ));
+                        
+            }
+        }
+    }
 }
+
