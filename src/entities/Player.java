@@ -1,8 +1,8 @@
 package entities;
 
 import entities.interfaces.*;
-import utils.*;
 import java.util.*;
+import utils.*;
 
 public class Player extends ExplodableEntity implements ICollidable, IPlayerCoord {
 
@@ -11,17 +11,18 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
     private final long invulnerabilityTime = 1000; // 1 second
     private long blinkStartTime;
     private boolean isBlinking = false;
-
+    private int maxHealth; // variável que salva a vida do jogador após a configuração
     private static final long BLINK_DURATION = 1000; // 1 second blinking
     private static final long BLINK_INTERVAL = 100; // Blink every 100ms
-    private static final int MAX_HEALTH = 5;         // Max hearts
     private static final double MAX_RADIUS = 12.0;   // Player radius
-    private static final double MIN_RADIUS = 6.0;   // Player radius
+    private static final double MIN_RADIUS = 6.0;    // Player radius
 
-    public Player(Coordinate coordinate, Coordinate velocity) {
-        super(coordinate, velocity, States.ACTIVE, MAX_RADIUS, MAX_HEALTH);
+    public Player(Coordinate coordinate, Coordinate velocity, int maxHealth) {
+        super(coordinate, velocity, States.ACTIVE, MAX_RADIUS, maxHealth);
         this.nextShot = System.currentTimeMillis();
         this.lastHitTime = 0;
+        this.blinkStartTime = 0;
+        this.maxHealth = maxHealth;
     }
 
     public void update(long delta) {
@@ -71,9 +72,21 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
 
     public void respawn() {
         setState(States.ACTIVE);
-        setHealth(MAX_HEALTH);
+        setHealth(getMaxHealth()); // Use getMaxHealth() instead of MAX_HEALTH
         setX(GameLib.WIDTH / 2);
         setY(GameLib.HEIGHT * 0.9);
+        // Reset invulnerability timer for new life
+        this.lastHitTime = System.currentTimeMillis();
+        this.blinkStartTime = System.currentTimeMillis();
+        this.isBlinking = true;
+    }
+
+    public void heal(int amount) {
+        setHealth(Math.min(getHealth() + amount, getMaxHealth()));
+    }
+
+    public void setFullHealth() {
+        setHealth(getMaxHealth());
     }
 
     public boolean shouldDrawPlayer(long currentTime) {
@@ -92,7 +105,7 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
     }
 
     public int getMaxHealth() {
-        return MAX_HEALTH;
+        return maxHealth;
     }
 
     public double getMaxRadius() {

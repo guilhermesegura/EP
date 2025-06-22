@@ -1,4 +1,5 @@
 import entities.*;
+import game.*;
 import graphics.*;
 import java.awt.Color;
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.util.List;
 import utils.Coordinate;
 import utils.GameLib;
 import utils.States;
-import game.*;
 
 public class Game {
     private static boolean gameOver = false;
@@ -39,9 +39,9 @@ public class Game {
 
         Player player = new Player(
             new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
-            new Coordinate(0.25, 0.25)        
+            new Coordinate(0.25, 0.25),
+            gameLoader.getPlayerLife()        
         );
-        player.setHealth(gameLoader.getPlayerLife());
 
         List<Projectiles> playerProjectiles = new ArrayList<>();
         List<Projectiles> enemyProjectiles = new ArrayList<>();
@@ -69,9 +69,9 @@ public class Game {
                     gameOver = false;
                     player = new Player(
                         new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
-                        new Coordinate(0.25, 0.25)        
+                        new Coordinate(0.25, 0.25),
+                        gameLoader.getPlayerLife()        
                     );
-                    player.setHealth(gameLoader.getPlayerLife());
                     playerProjectiles.clear();
                     enemyProjectiles.clear();
                     enemies.clear();

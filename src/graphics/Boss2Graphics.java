@@ -1,5 +1,6 @@
 package graphics;
 
+import entities.Boss;
 import entities.Boss2;
 import java.awt.Color;
 import utils.GameLib;
@@ -105,16 +106,25 @@ public class Boss2Graphics {
         
     }
 
-    private static void drawHealthBar(Boss2 boss) {
+    private static void drawHealthBar(Boss boss) {
         double barWidth = boss.getRadius() * 1.5 + 1;
         double barHeight = 4;
-        double barX = boss.getX() - barWidth/2 + 20;
-        double barY = boss.getY() - boss.getRadius()/2 -30; 
+
+        // Centro inicial da barra
+        double barX = boss.getX() - barWidth / 2 + 7;
+        double barY = boss.getY() - boss.getRadius() / 2 - 30;
+
         double bossRatio = boss.getHealth() / (double)boss.getMaxHealth();
 
-        GameLib.setColor(Color.RED);
-        GameLib.fillRect(barX, barY, barWidth, barHeight);
+        double greenWidth = barWidth * bossRatio;
+        double redWidth = barWidth - greenWidth;
+
+        // Desenhar a parte verde (vida restante)
         GameLib.setColor(Color.GREEN);
-        GameLib.fillRect(barX, barY, barWidth * bossRatio, barHeight);
+        GameLib.fillRect(barX + greenWidth / 2, barY, greenWidth, barHeight);
+
+        // Desenhar a parte vermelha (vida perdida), posicionada à direita da barra verde
+        GameLib.setColor(Color.RED);
+        GameLib.fillRect(barX + greenWidth + redWidth / 2, barY, redWidth, barHeight);
     }
 }

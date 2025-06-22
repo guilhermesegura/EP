@@ -25,8 +25,8 @@ public class IncreaseLifePowerUp extends PowerUp {
     public void onCollected(Player player) {
         if (getState() == States.ACTIVE) {
             if(player.getHealth() < player.getMaxHealth()) {
-                player.setHealth(player.getHealth() + 1);  // Use the proper method
-                 setState(States.EXPLODING);
+                player.setHealth((int)player.getHealth() + 1);  
+                setState(States.EXPLODING);
             }     
         }
     }
