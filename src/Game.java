@@ -1,14 +1,20 @@
 import entities.*;
 import graphics.*;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import utils.Coordinate;
 import utils.GameLib;
 import utils.States;
+import game.*;
 
 public class Game {
     private static boolean gameOver = false;
+    private static boolean levelCompleted = false;
+    private static int currentLevelIndex = 0;
+    private static long levelStartTime;
+    private static Loader gameLoader;
     
     public static void main(String[] args) {
         // Game loop control
@@ -16,11 +22,20 @@ public class Game {
         long currentTime = System.currentTimeMillis();
         long delta;
 
+        try {
+            // Carrega a configuração do jogo
+            gameLoader = new Loader("EP/src/game/game_config.txt");
+        } catch (IOException e) {
+            System.err.println("Erro ao carregar configuração do jogo: " + e.getMessage());
+            return;
+        }
+
         // Player setup
         Player player = new Player(
             new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
             new Coordinate(0.25, 0.25)        
         );
+        player.setHealth(gameLoader.getPlayerLife());
 
         // Entity lists
         List<Projectiles> playerProjectiles = new ArrayList<>();
@@ -35,15 +50,11 @@ public class Game {
         BackGroundGraphics background1 = new BackGroundGraphics(0.070, 20);
         BackGroundGraphics background2 = new BackGroundGraphics(0.045, 50);
 
-        // Enemy spawn timers
-        long nextEnemy1 = currentTime + 2000;
-        long nextEnemy2 = currentTime + 7000;
-        long nextBoss = currentTime + 10000;
-        double enemy2_spawnX = GameLib.WIDTH * 0.20;
-        int enemy2_count = 0;
-
         // Initialize graphics
         GameLib.initGraphics();
+
+        // Inicia a primeira fase
+        startLevel(currentLevelIndex, currentTime);
 
         // Main game loop
         while (running) {
@@ -65,15 +76,14 @@ public class Game {
                         new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
                         new Coordinate(0.25, 0.25)        
                     );
+                    player.setHealth(gameLoader.getPlayerLife());
                     playerProjectiles.clear();
                     enemyProjectiles.clear();
                     enemies.clear();
                     powerUps.clear();
                     boss = null;
-                    nextEnemy1 = currentTime + 2000;
-                    nextEnemy2 = currentTime + 7000;
-                    nextBoss = currentTime + 10000;
-                    enemy2_count = 0;
+                    currentLevelIndex = 0;
+                    startLevel(currentLevelIndex, currentTime);
                 }
                 
                 // Mostra tela de Game Over
@@ -82,6 +92,25 @@ public class Game {
                 continue; // Pula o resto do loop
             }
             
+            // Verifica se o nível foi completado
+            if (levelCompleted) {
+                currentLevelIndex++;
+                if (currentLevelIndex < gameLoader.getLevels().size()) {
+                    // Próxima fase
+                    startLevel(currentLevelIndex, currentTime);
+                    playerProjectiles.clear();
+                    enemyProjectiles.clear();
+                    enemies.clear();
+                    powerUps.clear();
+                    boss = null;
+                    levelCompleted = false;
+                } else {
+                    // Fim do jogo (vitória)
+                    GameLib.display();
+                    continue;
+                }
+            }
+
             player.update(delta);
             player.shoot(currentTime, playerProjectiles);
             
@@ -91,8 +120,6 @@ public class Game {
                 player.setState(States.INACTIVE);
                 continue;
             }
-
-            
 
             // 2. Update entities
             for (Projectiles projectile : playerProjectiles) projectile.update(delta);
@@ -107,49 +134,16 @@ public class Game {
             if (boss != null) {
                 boss.update(delta);
                 boss.shoot(currentTime, enemyProjectiles);
-            }
-
-            // 3. Spawn entities
-            if (currentTime > nextEnemy1) {
-                enemies.add(new Enemy1(
-                    new Coordinate(Math.random() * (GameLib.WIDTH - 20.0) + 10.0, -10.0),
-                    new Coordinate(0.0, 0.20 + Math.random() * 0.15)                    
-                    ));
-                nextEnemy1 = currentTime + 1000;
-            }
-
-            if (currentTime > nextEnemy2) {
-                enemies.add(new Enemy2(
-                    new Coordinate(enemy2_spawnX, -10.0),
-                    new Coordinate(0.42, 0.42)
-                ));
-                enemy2_count++;
-                if (enemy2_count < 10) {
-                    nextEnemy2 = currentTime + 120;
-                } else {
-                    enemy2_count = 0;
-                    enemy2_spawnX = Math.random() > 0.5 ? GameLib.WIDTH * 0.2 : GameLib.WIDTH * 0.8;
-                    nextEnemy2 = (long) (currentTime + 3000 + Math.random() * 3000);
-                }
-            }
-            
-            // Spawn boss
-            if (currentTime > nextBoss && boss == null) {
-                boolean spawnBoss2 = Math.random() < 1;
                 
-                if (spawnBoss2) {
-                    boss = new Boss2(
-                        new Coordinate(GameLib.WIDTH / 2.0, -50.0),
-                        new Coordinate(0.1, 0.05), 20, player
-                    );
-                } else {
-                    boss = new Boss(
-                        new Coordinate(GameLib.WIDTH / 2.0, -50.0),
-                        new Coordinate(0.1, 0.05), 30
-                    );
+                // Verifica se o chefe foi derrotado
+                if (boss.getHealth() <= 0) {
+                    boss.explosion(currentTime);
+                    levelCompleted = true;
                 }
-                nextBoss = Long.MAX_VALUE;
             }
+
+            // 3. Processar eventos de spawn da fase atual
+            processSpawnEvents(currentTime, enemies, boss, player);
 
             // 4. Check collisions
             for (Projectiles p : playerProjectiles) {
@@ -200,7 +194,7 @@ public class Game {
             enemies.removeIf(e -> e.getState() == States.INACTIVE);
             powerUps.removeIf(e -> e.getState() == States.INACTIVE);
 
-
+            // Renderização
             background2.setColor(Color.DARK_GRAY);
             background2.fillBakcGround(delta);
             background1.setColor(Color.GRAY);
@@ -208,7 +202,6 @@ public class Game {
 
             PlayerGraphics.draw(player, Color.BLUE, currentTime);
             
-
             ProjectileGraphics.projectiles(playerProjectiles, Color.GREEN);
             ProjectileGraphics.ballProjectiles(enemyProjectiles, Color.RED, 2.0);
             EnemyGraphics.enemy(currentTime, enemies, Color.CYAN, 9.0);
@@ -231,5 +224,78 @@ public class Game {
             }
         }
         System.exit(0);
+    }
+
+    private static void startLevel(int levelIndex, long currentTime) {
+        levelStartTime = currentTime;
+        levelCompleted = false;
+
+        // Pega o nível atual
+        Level currentLevel = gameLoader.getLevels().get(levelIndex);
+
+        // Reseta o status de todos os eventos de spawn desse nível
+        for (SpawnEvent event : currentLevel.getEvents()) {
+            event.setSpawned(false);
+        }
+
+        // Mostra uma tela de "Início de Fase"
+        long messageStartTime = System.currentTimeMillis();
+        long displayDuration = 2000;  // Exibir por 2 segundos
+
+        while (System.currentTimeMillis() - messageStartTime < displayDuration) {
+            GameLib.clear();
+            GameLib.setColor(Color.WHITE);
+            GameLib.drawText("Iniciando Fase " + (levelIndex + 1), GameLib.WIDTH / 2 - 50, GameLib.HEIGHT / 2);
+            GameLib.display();
+            try {
+                Thread.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void processSpawnEvents(long currentTime, List<Enemy> enemies, Boss boss, Player player) {
+        long levelTime = currentTime - levelStartTime;
+        Level currentLevel = gameLoader.getLevels().get(currentLevelIndex);
+        
+        for (SpawnEvent event : currentLevel.getEvents()) {
+            // Verifica se é hora de spawnar este evento e se ainda não foi spawnado
+            if (levelTime >= event.getTime() && !event.isSpawned()) {
+                if (event.getType() == SpawnEvent.Type.INIMIGO) {
+                    // Spawn de inimigo comum
+                    Enemy enemy;
+                    if (event.getEntityType() == 1) {
+                        enemy = new Enemy1(
+                            new Coordinate(event.getX(), event.getY()),
+                            new Coordinate(0.0, 0.20 + Math.random() * 0.15)
+                        );
+                    } else { // tipo 2
+                        enemy = new Enemy2(
+                            new Coordinate(event.getX(), event.getY()),
+                            new Coordinate(0.42, 0.42)
+                        );
+                    }
+                    enemies.add(enemy);
+                } else if (event.getType() == SpawnEvent.Type.CHEFE) {
+                    // Spawn de chefe
+                    if (event.getEntityType() == 1) {
+                        boss = new Boss(
+                            new Coordinate(event.getX(), event.getY()),
+                            new Coordinate(0.1, 0.05),
+                            event.getLife()
+                        );
+                    } else { // tipo 2
+                        boss = new Boss2(
+                            new Coordinate(event.getX(), event.getY()),
+                            new Coordinate(0.1, 0.05),
+                            event.getLife(),
+                            player
+                        );
+                    }
+                }
+                event.setSpawned(true);
+            }
+        }
     }
 }

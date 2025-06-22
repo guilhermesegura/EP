@@ -192,7 +192,16 @@ public class GameLib {
 		
 		keyboard.debug();
 	}
-}
+
+	public static void clear() {
+    g.setColor(Color.BLACK);
+    g.fillRect(0, 0, WIDTH, HEIGHT);
+	}
+
+	public static void drawText(String text, double x, double y) {
+		g.drawString(text, (int) Math.round(x), (int) Math.round(y));
+	}
+	}
 
 @SuppressWarnings("serial")
 class MyFrame extends JFrame {
