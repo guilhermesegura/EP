@@ -133,5 +133,20 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
                 ));
                 nextShot = currentTime + 100;
     }
+
 }
+
+
+    public void reset(Coordinate position, Coordinate velocity, int maxHealth) {
+            setCoordinates(position);
+            setVelocity(velocity);
+            this.maxHealth = maxHealth;
+            setHealth(maxHealth);
+            setState(States.ACTIVE);
+            this.nextShot = System.currentTimeMillis();
+            this.lastHitTime = 0;
+            this.blinkStartTime = 0;
+            this.isBlinking = false;
+            setExplosionEnd(0);
+        }
 }
