@@ -1,9 +1,8 @@
 package entities;
 
+import java.util.List;
 import utils.*;
 import static utils.States.*;
-
-import java.util.List;
 
 public class Enemy2 extends Enemy {
 
@@ -19,12 +18,17 @@ public class Enemy2 extends Enemy {
     private static final int MAX_HEALTH = 1;
     private static final double MAX_RADIUS = 12.0;
 
+    //ATRIBUTOS DE VELOCIDADE
+    private static final double MAX_VX = 0.42;
+    private static final double MAX_VY = 0.42;
+
+
     private boolean readyToShoot;
     private double previousY;
     private boolean passedThreshold;
 
-    public Enemy2(Coordinate coordinate, Coordinate velocity) {
-        super(coordinate, velocity, ACTIVE, MAX_RADIUS, MAX_HEALTH);
+    public Enemy2(Coordinate coordinate) {
+        super(coordinate, new Coordinate(MAX_VX, MAX_VY), ACTIVE, MAX_RADIUS, MAX_HEALTH);
         this.readyToShoot = false;
         this.passedThreshold = false;
     }

@@ -18,17 +18,6 @@ public class BossGraphics {
         }
     }
 
-public static void drawBoss(Boss boss, long currentTime) {
-    if (boss.getState() == States.ACTIVE) {
-        drawAlien(boss, currentTime);
-        drawHealthBar(boss);
-    } else if (boss.getState() == States.EXPLODING) {
-        double alpha = (currentTime - boss.getExplosionStart()) / 
-                     (boss.getExplosionEnd() - boss.getExplosionStart());
-        GameLib.drawExplosion(boss.getX(), boss.getY(), alpha);
-    }
-}
-
 private static void drawAlien(Boss boss, long currentTime) {
     double x = boss.getX();
     double y = boss.getY();
@@ -108,4 +97,3 @@ private static void drawAlienEye(double x, double y, double size, long currentTi
         GameLib.fillRect(barX + greenWidth + redWidth / 2, barY, redWidth, barHeight);
     }
 }
-

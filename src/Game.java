@@ -11,6 +11,8 @@ import utils.States;
 
 public class Game {
     private static boolean gameOver = false;
+    private static boolean levelCompleted = false;
+    private static long levelCompleteTime;
     private static Loader gameLoader;
     private static LevelLoader levelLoader;
 
@@ -20,7 +22,7 @@ public class Game {
         long delta;
 
         try {
-            gameLoader = new Loader("EP/src/game/game_config.txt");
+            gameLoader = new Loader("T:/EP_COO/EP/EP/src/game/game_config.txt");
             levelLoader = new LevelLoader(gameLoader);
         } catch (IOException e) {
             System.err.println("Erro ao carregar configuração do jogo: " + e.getMessage());
@@ -55,35 +57,35 @@ public class Game {
             }
             
             if (gameOver) {
-                if (GameLib.iskeyPressed(GameLib.KEY_ENTER)) {
-                    resetGame(player, playerProjectiles, enemyProjectiles, enemies, powerUps);
-                }
-                
                 GameOverGraphics.drawGameOver();
                 GameLib.display();
                 continue;
             }
             
             if (levelLoader.isGameWon()) {
-                if (GameLib.iskeyPressed(GameLib.KEY_ENTER)) {
-                    resetGame(player, playerProjectiles, enemyProjectiles, enemies, powerUps);
-                }
-                
                 VictoryGraphics.drawVictory();
                 GameLib.display();
                 continue;
             }
 
-            if (levelLoader.isLevelCompleted()) {
-                if (levelLoader.hasMoreLevels()) {
-                    levelLoader.nextLevel();
-                    levelLoader.startLevel(levelLoader.getCurrentLevelIndex(), currentTime);
-                    playerProjectiles.clear();
-                    enemyProjectiles.clear();
-                    enemies.clear();
-                    powerUps.clear();
-                    boss = null;
+            if (levelCompleted) {
+                LevelCompletedGraphics.drawLevelCompleted();
+                GameLib.display();
+
+                if (currentTime - levelCompleteTime > 2000) { // Mostra por 2 segundos
+                    levelCompleted = false;
+                    if (levelLoader.hasMoreLevels()) {
+                        levelLoader.nextLevel();
+                        levelLoader.startLevel(levelLoader.getCurrentLevelIndex(), currentTime);
+                        playerProjectiles.clear();
+                        enemyProjectiles.clear();
+                        enemies.clear();
+                        powerUps.clear();
+                        player.setRadius(player.getMaxRadius());
+                        boss = null;
+                    }
                 }
+                continue;
             }
 
             player.update(delta);
@@ -111,6 +113,8 @@ public class Game {
                 if (boss.getHealth() <= 0) {
                     boss.explosion(currentTime);
                     levelLoader.setLevelCompleted(true);
+                    levelCompleted = true;
+                    levelCompleteTime = currentTime;
                 }
             }
 
@@ -199,22 +203,5 @@ public class Game {
             }
         }
         System.exit(0);
-    }
-
-    private static void resetGame(Player player, List<Projectiles> playerProjectiles, 
-                                List<Projectiles> enemyProjectiles, List<Enemy> enemies, 
-                                List<PowerUp> powerUps) {
-        gameOver = false;
-        levelLoader.resetGame();
-        player.reset(
-            new Coordinate(GameLib.WIDTH / 2.0, GameLib.HEIGHT * 0.90),
-            new Coordinate(0.25, 0.25),
-            gameLoader.getPlayerLife()
-        );
-        playerProjectiles.clear();
-        enemyProjectiles.clear();
-        enemies.clear();
-        powerUps.clear();
-        levelLoader.startLevel(levelLoader.getCurrentLevelIndex(), System.currentTimeMillis());
     }
 }

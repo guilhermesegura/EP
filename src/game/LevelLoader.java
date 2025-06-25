@@ -1,10 +1,9 @@
 package game;
 
 import entities.*;
-import utils.Coordinate;
-import utils.States;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+import utils.Coordinate;
 
 public class LevelLoader {
     private Loader gameLoader;
@@ -65,8 +64,7 @@ public class LevelLoader {
     private void handleEnemySpawn(SpawnEvent event, long currentTime, List<Enemy> enemies) {
         if (event.getEntityType() == 1) {
             enemies.add(new Enemy1(
-                new Coordinate(event.getX(), event.getY()),
-                new Coordinate(0.0, 0.20 + Math.random() * 0.15)
+                new Coordinate(event.getX(), event.getY())
             ));
         } else if (event.getEntityType() == 2 && !isSpawningEnemy2Squad) {
             isSpawningEnemy2Squad = true;
@@ -80,14 +78,12 @@ public class LevelLoader {
         if (event.getEntityType() == 1) {
             return new Boss(
                 new Coordinate(event.getX(), event.getY()),
-                new Coordinate(0.1, 0.05),
-                30
+                event.getHealth()
             );
         } else {
             return new Boss2(
                 new Coordinate(event.getX(), event.getY()),
-                new Coordinate(0.1, 0.05),
-                20,
+                event.getHealth(),
                 player
             );
         }
@@ -97,8 +93,7 @@ public class LevelLoader {
         if (isSpawningEnemy2Squad && currentTime > nextEnemy2SquadSpawnTime) {
             if (enemy2SquadCount < 10) {
                 enemies.add(new Enemy2(
-                    new Coordinate(enemy2SquadSpawnX, -10.0),
-                    new Coordinate(0.42, 0.42)
+                    new Coordinate(enemy2SquadSpawnX, -10.0)
                 ));
                 enemy2SquadCount++;
                 nextEnemy2SquadSpawnTime = currentTime + 120;

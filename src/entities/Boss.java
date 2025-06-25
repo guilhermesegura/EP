@@ -1,6 +1,5 @@
 package entities;
 import java.util.List;
-
 import utils.Coordinate;
 import utils.GameLib;
 import utils.States;
@@ -10,13 +9,18 @@ public class Boss extends Enemy {
     private long lastAttackTime;
     long attackCooldown = 2000; // 2 seconds
     private int attackPattern = 0;
-    private static final int MAX_HEALTH = 100;
-    private static final double MAX_RADIUS = 30.0;
+    private int maxHealth;
+    private static final double MAX_RADIUS = 30.0; //tamanho dos Bosses
     private static boolean shouldSpawn = true;
 
-    public Boss(Coordinate coordinate, Coordinate velocity, double r) {
-        super(coordinate, velocity, States.ACTIVE, r, MAX_HEALTH);
+    //ATRIBUTOS DE VELOCIDADE
+    private static final double MAX_VX = 0.1;
+    private static final double MAX_VY = 0.05;
+
+    public Boss(Coordinate coordinate,int maxHealth) {
+        super(coordinate, new Coordinate(MAX_VX, MAX_VY), States.ACTIVE, MAX_RADIUS, maxHealth);
         this.lastAttackTime = System.currentTimeMillis();
+        this.maxHealth = maxHealth;
     }
 
     @Override
@@ -91,7 +95,7 @@ public class Boss extends Enemy {
     }
 
     public int getMaxHealth() {
-        return MAX_HEALTH;
+        return maxHealth;
     }
 
     public double getMaxRadius() {

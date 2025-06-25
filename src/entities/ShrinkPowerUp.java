@@ -22,7 +22,7 @@ public class ShrinkPowerUp extends PowerUp
     }
 
     public void update(Player player) {
-        if(startTime + 7000 <= System.currentTimeMillis() && getState() == States.EXPLODING)
+        if(startTime + 5000 <= System.currentTimeMillis() && getState() == States.EXPLODING)
         {   
             player.setRadius(player.getRadius() * 2.0);
             this.setState(States.INACTIVE);

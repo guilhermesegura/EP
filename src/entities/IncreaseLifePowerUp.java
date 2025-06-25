@@ -24,10 +24,14 @@ public class IncreaseLifePowerUp extends PowerUp {
     @Override
     public void onCollected(Player player) {
         if (getState() == States.ACTIVE) {
-            if(player.getHealth() < player.getMaxHealth()) {
-                player.setHealth((int)player.getHealth() + 1);  
-                setState(States.EXPLODING);
+            int increase = Math.ceilDiv(player.getMaxHealth(),5); //aumenta 20%
+            int newHealth = player.getHealth() + increase;
+            if(newHealth < player.getMaxHealth()) {
+                player.setHealth(newHealth);  
+            } else {
+                player.setFullHealth();
             }     
+        setState(States.EXPLODING);
         }
     }
 }

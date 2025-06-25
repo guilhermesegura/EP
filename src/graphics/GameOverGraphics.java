@@ -5,198 +5,46 @@ import utils.GameLib;
 
 public class GameOverGraphics {
     public static void drawGameOver() {
-        // Fundo escuro com linhas horizontais
-        GameLib.setColor(new Color(0, 0, 0));
-        for (int y = 0; y < GameLib.HEIGHT; y += 4) {
-            GameLib.drawLine(0, y, GameLib.WIDTH, y);
+        // Fundo semi-transparente (70% opacidade)
+        GameLib.setColor(new Color(0, 0, 0, 180));
+        GameLib.fillRect(0, 0, GameLib.WIDTH, GameLib.HEIGHT);
+        
+        // Efeito de borda pulsante vermelha
+        long currentTime = System.currentTimeMillis();
+        double pulse = Math.abs(Math.sin(currentTime * 0.005)) * 0.5 + 0.5;
+        GameLib.setColor(new Color((int)(255 * pulse), 0, 0, 30));
+        for(int i = 0; i < 5; i++) {
+            GameLib.drawRect(i, i, GameLib.WIDTH - i*2, GameLib.HEIGHT - i*2);
         }
+
+        // Efeito de sombra para o texto
+        GameLib.setColor(new Color(50, 0, 0));
+        drawTextWithLines("GAME OVER", GameLib.WIDTH/2 + 3, GameLib.HEIGHT/2 - 47, 5);
         
-        // Texto "GAME OVER"
-        drawTextWithLines("GAME OVER", GameLib.WIDTH/2, GameLib.HEIGHT/2 - 50, 5, Color.RED);
+        // Texto principal vermelho brilhante
+        GameLib.setColor(new Color(255, 100, 100));
+        drawTextWithLines("GAME OVER", GameLib.WIDTH/2, GameLib.HEIGHT/2 - 50, 5);
+
+        // Instruções com sombra
+        GameLib.setColor(new Color(20, 20, 20));
+        drawTextWithLines("ESC PARA SAIR", GameLib.WIDTH/2 + 2, GameLib.HEIGHT/2 + 82, 2);
         
-        // Instruções
-        drawTextWithLines("PRESSIONE ENTER PARA REINICIAR", GameLib.WIDTH/2, GameLib.HEIGHT/2 + 50, 2, Color.WHITE);
-        drawTextWithLines("ESC PARA SAIR", GameLib.WIDTH/2, GameLib.HEIGHT/2 + 80, 2, Color.WHITE);
+        GameLib.setColor(Color.WHITE);
+        drawTextWithLines("ESC PARA SAIR", GameLib.WIDTH/2, GameLib.HEIGHT/2 + 80, 2);
     }
     
-    private static void drawTextWithLines(String text, double centerX, double centerY, int size, Color color) {
-        GameLib.setColor(color);
-        double spacing = size * 3.5; // Pequeno espaço entre letras
+    private static void drawTextWithLines(String text, double centerX, double centerY, int size) {
+        double spacing = size * 3.5;
         double startX = centerX - (text.length() * spacing) / 2;
         
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            drawCharWithLines(c, startX + i * spacing, centerY, size);
+            CharGraphics.drawCharWithLines(c, startX + i * spacing, centerY, size);
         }
     }
     
+    // Método mantido para compatibilidade (se necessário)
     public static void drawCharWithLines(char c, double x, double y, int size) {
-        switch (Character.toUpperCase(c)) {
-            case 'G':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 2);
-                GameLib.drawLine(x + size * 3, y + size * 2, x + size * 2, y + size * 2);
-                GameLib.drawLine(x + size * 2, y + size * 2, x + size * 2, y + size * 5);
-                GameLib.drawLine(x + size * 2, y + size * 5, x, y + size * 5);
-                break;
-            case 'A':
-                GameLib.drawLine(x, y + size * 5, x + size * 1.5, y);
-                GameLib.drawLine(x + size * 1.5, y, x + size * 3, y + size * 5);
-                GameLib.drawLine(x + size * 0.75, y + size * 2.5, x + size * 2.25, y + size * 2.5);
-                break;
-            case 'M':
-                GameLib.drawLine(x, y + size * 5, x, y);
-                GameLib.drawLine(x, y, x + size * 1.5, y + size * 2.5);
-                GameLib.drawLine(x + size * 1.5, y + size * 2.5, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 5);
-                break;
-            case 'E':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 2, y + size * 2.5);
-                GameLib.drawLine(x, y + size * 5, x + size * 3, y + size * 5);
-                break;
-            case 'O':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 5);
-                GameLib.drawLine(x, y + size * 5, x + size * 3, y + size * 5);
-                break;
-            case 'V':
-                GameLib.drawLine(x, y, x + size * 1.5, y + size * 5);
-                GameLib.drawLine(x + size * 1.5, y + size * 5, x + size * 3, y);
-                break;
-            case 'R':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 2.5);
-                GameLib.drawLine(x + size * 3, y + size * 2.5, x, y + size * 2.5);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 3, y + size * 5);
-                break;
-            case 'P':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 2.5);
-                GameLib.drawLine(x + size * 3, y + size * 2.5, x, y + size * 2.5);
-                break;
-            case 'S':
-                GameLib.drawLine(x + size * 3, y, x, y);
-                GameLib.drawLine(x, y, x, y + size * 2.5);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 3, y + size * 2.5);
-                GameLib.drawLine(x + size * 3, y + size * 2.5, x + size * 3, y + size * 5);
-                GameLib.drawLine(x + size * 3, y + size * 5, x, y + size * 5);
-                break;
-            case 'I':
-                GameLib.drawLine(x + size * 1.5, y, x + size * 1.5, y + size * 5);
-                break;
-            case 'N':
-                GameLib.drawLine(x, y + size * 5, x, y);
-                GameLib.drawLine(x, y, x + size * 3, y + size * 5);
-                GameLib.drawLine(x + size * 3, y + size * 5, x + size * 3, y);
-                break;
-            case 'C':
-                GameLib.drawLine(x + size * 3, y, x, y);
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 5, x + size * 3, y + size * 5);
-                break;
-            case 'T':
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 1.5, y, x + size * 1.5, y + size * 5);
-                break;
-            case 'L':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 5, x + size * 3, y + size * 5);
-                break;
-            case 'D':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 2, y);
-                GameLib.drawLine(x + size * 2, y, x + size * 3, y + size * 2.5);
-                GameLib.drawLine(x + size * 3, y + size * 2.5, x + size * 2, y + size * 5);
-                GameLib.drawLine(x + size * 2, y + size * 5, x, y + size * 5);
-                break;
-            case 'B':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 2, y);
-                GameLib.drawLine(x + size * 2, y, x + size * 3, y + size * 1.25);
-                GameLib.drawLine(x + size * 3, y + size * 1.25, x + size * 2, y + size * 2.5);
-                GameLib.drawLine(x + size * 2, y + size * 2.5, x + size * 3, y + size * 3.75);
-                GameLib.drawLine(x + size * 3, y + size * 3.75, x + size * 2, y + size * 5);
-                GameLib.drawLine(x + size * 2, y + size * 5, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 2, y + size * 2.5);
-                break;
-            
-            case 'J':
-                GameLib.drawLine(x + size * 1.5, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 3.5);
-                GameLib.drawLine(x + size * 3, y + size * 3.5, x + size * 1.5, y + size * 5);
-                GameLib.drawLine(x + size * 1.5, y + size * 5, x, y + size * 3.5);
-                break;
-                
-            case 'Q':
-                GameLib.drawLine(x, y, x, y + size * 3.5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 3.5);
-                GameLib.drawLine(x + size * 3, y + size * 3.5, x, y + size * 3.5);
-                GameLib.drawLine(x + size * 1.5, y + size * 1.75, x + size * 3, y + size * 5);
-                break;
-            
-            case 'U':
-                GameLib.drawLine(x, y, x, y + size * 3.5);
-                GameLib.drawLine(x, y + size * 3.5, x + size * 1.5, y + size * 5);
-                GameLib.drawLine(x + size * 1.5, y + size * 5, x + size * 3, y + size * 3.5);
-                GameLib.drawLine(x + size * 3, y + size * 3.5, x + size * 3, y);
-                break;
-            
-            case 'W':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 5, x + size * 1.5, y + size * 3);
-                GameLib.drawLine(x + size * 1.5, y + size * 3, x + size * 3, y + size * 5);
-                GameLib.drawLine(x + size * 3, y + size * 5, x + size * 3, y);
-                break;
-            
-            case 'X':
-                GameLib.drawLine(x, y, x + size * 3, y + size * 5);
-                GameLib.drawLine(x + size * 3, y, x, y + size * 5);
-                break;
-            
-            case 'Y':
-                GameLib.drawLine(x, y, x + size * 1.5, y + size * 2.5);
-                GameLib.drawLine(x + size * 3, y, x + size * 1.5, y + size * 2.5);
-                GameLib.drawLine(x + size * 1.5, y + size * 2.5, x + size * 1.5, y + size * 5);
-                break;
-            
-            case 'Z':
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 5, x + size * 3, y + size * 5);
-                break;
-            
-            case 'H':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 5);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 3, y + size * 2.5);
-                break;
-            
-            case 'K':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 3, y);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 3, y + size * 5);
-                break;
-            
-            case 'F':
-                GameLib.drawLine(x, y, x, y + size * 5);
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x, y + size * 2.5, x + size * 2, y + size * 2.5);
-                break;
-            
-            default:
-                // Para caracteres não implementados, desenha um quadrado
-                GameLib.drawLine(x, y, x + size * 3, y);
-                GameLib.drawLine(x + size * 3, y, x + size * 3, y + size * 5);
-                GameLib.drawLine(x + size * 3, y + size * 5, x, y + size * 5);
-                GameLib.drawLine(x, y + size * 5, x, y);
+        CharGraphics.drawCharWithLines(c, x, y, size);
     }
-}
-        
 }

@@ -1,9 +1,8 @@
 package entities;
 
+import java.util.List;
 import utils.*;
 import static utils.States.*;
-
-import java.util.List;
 
 public class Enemy1 extends Enemy {
 
@@ -12,9 +11,14 @@ public class Enemy1 extends Enemy {
 
     private static final int MAX_HEALTH = 1;
     private static final double MAX_RADIUS = 9.0;
+    
+    //ATRIBUTOS DE VELOCIDADE
+    private static final double MAX_VX = 0.00;
+    private static final double MAX_VY =  0.20 + Math.random() * 0.15;
 
-    public Enemy1(Coordinate coordinate, Coordinate velocity) {
-        super(coordinate, velocity, ACTIVE, MAX_RADIUS, MAX_HEALTH);
+
+    public Enemy1(Coordinate coordinate) {
+        super(coordinate, new Coordinate(MAX_VX, MAX_VY), ACTIVE, MAX_RADIUS, MAX_HEALTH);
     }
 
     public static int getMaxHealth() {

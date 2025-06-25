@@ -1,15 +1,15 @@
 package entities;
 
-import utils.*;
-import java.util.List;
 import entities.interfaces.*;
+import java.util.List;
+import utils.*;
 
 public class Boss2 extends Boss {
-
     int cycle_counter;
     IPlayerCoord player;
-    public Boss2(Coordinate coordinate, Coordinate velocity, double r, IPlayerCoord p) {
-        super(coordinate, velocity, 20);
+    
+    public Boss2(Coordinate coordinate, int health, IPlayerCoord p) {
+        super(coordinate, health);
         super.setAttackCooldown(0);
         this.cycle_counter = 0;
         this.player = p;
