@@ -1,4 +1,4 @@
 10
 2
-T:/EP_COO/EP/EP/src/game/fase1.txt
-T:/EP_COO/EP/EP/src/game/fase2.txt
+src/game/fase1.txt
+src/game/fase2.txt
