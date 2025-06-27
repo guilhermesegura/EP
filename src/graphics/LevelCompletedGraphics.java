@@ -44,9 +44,9 @@ public class LevelCompletedGraphics {
         // Contador regressivo
         long elapsed = currentTime - startTime;
         long secondsLeft = 3 - (elapsed / 1000);
-        if (secondsLeft > 0) {
+        if (secondsLeft >= 0) {
             GameLib.setColor(new Color(255, 255, 255, 150));
-            drawTextWithLines("PROXIMO NIVEL EM: " + secondsLeft, GameLib.WIDTH/2, GameLib.HEIGHT/2 + 80, 2);
+            drawTextWithLines("PROXIMO NIVEL EM " + secondsLeft, GameLib.WIDTH/2, GameLib.HEIGHT/2 + 80, 2);
         }
     }
 

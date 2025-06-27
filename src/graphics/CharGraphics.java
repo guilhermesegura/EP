@@ -169,8 +169,8 @@ public class CharGraphics {
                 break;    
             case '1':
                 GameLib.drawLine(x + size * 1.5, y, x + size * 1.5, y + size * 5);
-                GameLib.drawLine(x, y + size * 4, x + size * 1.5, y + size * 5);
-                GameLib.drawLine(x + size * 1.5, y + size * 5, x + size * 3, y + size * 4);
+                GameLib.drawLine(x + size * 1.5, y, x + size * 0.5, y + size);
+                GameLib.drawLine(x, y + size * 5, x + size * 3, y + size * 5);
                 break;
                 
             case '2':

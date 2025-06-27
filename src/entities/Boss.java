@@ -7,7 +7,7 @@ import utils.States;
 public class Boss extends Enemy {
 
     private long lastAttackTime;
-    long attackCooldown = 2000; // 2 seconds
+    long attackCooldown = 500; // 2 seconds
     private int attackPattern = 0;
     private int maxHealth;
     private static final double MAX_RADIUS = 30.0; //tamanho dos Bosses
@@ -61,23 +61,24 @@ public class Boss extends Enemy {
                     double vx = Math.cos(angle) * 0.3;
                     double vy = Math.sin(angle) * 0.3;
                     enemyProjectiles.add(new Projectiles(
-                        new Coordinate(getX(), getY()),
+                        new Coordinate(getX() , getY()),
                         new Coordinate(vx, vy),
                         5.0,
                         Projectiles.ENEMY_PROJECTILE,
                         1
                     ));
-                }
+                }  
                 break;
+                
 
             case 1:
                 // Disparo único forte
                 enemyProjectiles.add(new Projectiles(
                     new Coordinate(getX(), getY()),
                     new Coordinate(0, 0.5),
-                    10.0,
+                    20.0,
                     Projectiles.ENEMY_PROJECTILE,
-                    3
+                    4
                 ));
                 break;
         }

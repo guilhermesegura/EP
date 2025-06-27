@@ -76,8 +76,9 @@ public class Game {
                 LevelCompletedGraphics.drawLevelCompleted();
                 GameLib.display();
 
-                if (currentTime - levelCompleteTime > 2000) { // Mostra por 2 segundos
+                if (currentTime - levelCompleteTime > 3000) { // Mostra por 2 segundos
                     levelCompleted = false;
+                    LevelCompletedGraphics.resetTimer();
                     if (levelLoader.hasMoreLevels()) {
                         levelLoader.nextLevel();
                         levelLoader.startLevel(levelLoader.getCurrentLevelIndex(), currentTime);
