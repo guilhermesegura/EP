@@ -22,7 +22,7 @@ public class Game {
         long delta;
 
         try {
-            gameLoader = new Loader("src/game/game_config.txt");
+            gameLoader = new Loader("./game/game_config.txt");
             levelLoader = new LevelLoader(gameLoader);
         } catch (IOException e) {
             System.err.println("Erro ao carregar configuração do jogo: " + e.getMessage());

@@ -1,4 +1,4 @@
 10
 2
-src/game/fase1.txt
-src/game/fase2.txt
+./game/fase1.txt
+./game/fase2.txt
