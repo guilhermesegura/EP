@@ -2,7 +2,7 @@ package game;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +10,13 @@ public class Level {
     
     private List<SpawnEvent> events;
 
-    public Level(String configFilePath) throws IOException{
+    public Level(Path configFilePath) throws IOException{
         events = new ArrayList<>();
         loadLevelConfig(configFilePath);
     }
 
-    private void loadLevelConfig(String configFilePath) throws IOException {
-        List<String> lines = Files.readAllLines(Paths.get(configFilePath));
+    private void loadLevelConfig(Path configFilePath) throws IOException {
+        List<String> lines = Files.readAllLines(configFilePath);
 
         boolean bossFound = false;
 

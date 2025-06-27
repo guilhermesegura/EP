@@ -1,7 +1,9 @@
 package game;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +13,15 @@ public class Loader {
     private int playerLife;
     private List<Level> levels;
 
-    public Loader(String configFilePath) throws IOException {
+    public Loader(Path configFilePath) throws IOException {
         levels = new ArrayList<>();
         loadGameConfig(configFilePath);
     }
 
 
-    private void loadGameConfig(String configFilePath) throws IOException {
+    private void loadGameConfig(Path configFilePath) throws IOException {
         
-        List<String> lines = Files.readAllLines(Paths.get(configFilePath));
+        List<String> lines = Files.readAllLines(configFilePath);
 
         if(lines.size() < 2){
             throw new  IllegalArgumentException("Configuração inválida: deve conter pelo menos a vida do jogador e número de fases.");
@@ -34,7 +36,7 @@ public class Loader {
         // Demais linhas: caminhos dos arquivos de configurações das fases
         for(int i = 0; i < numLevels; i ++){
             String levelPath = lines.get(i + 2).trim();
-            Level level = new Level(levelPath);
+            Level level = new Level(Path.of(levelPath));
             levels.add(level);
             
         }

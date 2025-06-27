@@ -1,4 +1,4 @@
 10
 2
-./game/fase1.txt
-./game/fase2.txt
+game/fase1.txt
+game/fase2.txt

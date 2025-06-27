@@ -3,6 +3,9 @@ import game.*;
 import graphics.*;
 import java.awt.Color;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import utils.Coordinate;
@@ -22,7 +25,8 @@ public class Game {
         long delta;
 
         try {
-            gameLoader = new Loader("./game/game_config.txt");
+
+            gameLoader = new Loader(Path.of("game/game_config.txt"));
             levelLoader = new LevelLoader(gameLoader);
         } catch (IOException e) {
             System.err.println("Erro ao carregar configuração do jogo: " + e.getMessage());
