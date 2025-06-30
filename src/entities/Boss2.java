@@ -19,7 +19,7 @@ public class Boss2 extends Boss {
     public void performAttack(List<Projectiles> enemyProjectiles) {
         if (!canAttack()) return;
 
-        // Ataque simples: tiro único para baixo com dano 1
+        
         if(cycle_counter < 100)
         {
             if(cycle_counter % 50 == 0){
@@ -32,7 +32,7 @@ public class Boss2 extends Boss {
                 new Coordinate(normdirection.getX() * 0.6 , normdirection.getY() * 0.6),
                 10,
                 Projectiles.ENEMY_PROJECTILE,
-                1
+                3
             ));
         }
             cycle_counter++;
@@ -43,7 +43,7 @@ public class Boss2 extends Boss {
             new Coordinate(0, 0.4),
             10,
             Projectiles.ENEMY_PROJECTILE,
-            1
+            2
         ));
         cycle_counter++;
         if(cycle_counter > 600) cycle_counter = 0;
@@ -57,6 +57,29 @@ public class Boss2 extends Boss {
             field.setLong(this, time);
         } catch(Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void update(long delta) {
+        if (getState() == States.EXPLODING) {
+            if (System.currentTimeMillis() > getExplosionEnd()) {
+                setState(States.INACTIVE);
+            }
+            return;
+        }
+
+        if (getState() == States.ACTIVE) {
+            // Movimento horizontal com reversão ao tocar a borda
+            setX(getX() + getVx() * delta);
+            if (getX() < -getRadius() || getX() > GameLib.WIDTH - getRadius()) {
+                setVx(getVx() * -1);
+            }
+
+            // Movimento vertical até 30% da tela
+            setY(getY() + getVy() * delta);
+            if (getY() > GameLib.HEIGHT * 0.3) {
+                setVy(0);
+            }
         }
     }
 }

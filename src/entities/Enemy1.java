@@ -10,7 +10,7 @@ public class Enemy1 extends Enemy {
     private static final double SHOOTING_HEIGHT_RATIO = 0.5;
 
     private static final int MAX_HEALTH = 1;
-    private static final double MAX_RADIUS = 9.0;
+    private static final double MAX_RADIUS = 12.0;
     
     //ATRIBUTOS DE VELOCIDADE
     private static final double MAX_VX = 0.00;

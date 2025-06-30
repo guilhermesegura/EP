@@ -22,12 +22,12 @@ public class EnemyGraphics
                 if(enemy instanceof Enemy1)
                 {
                     GameLib.setColor(Color.CYAN);
-					GameLib.drawCircle(enemy.getX(), enemy.getY(), r);
+					GameLib.drawCircle(enemy.getX(), enemy.getY(), enemy.getRadius());
                 }
                 if(enemy instanceof Enemy2)
                 {
                     GameLib.setColor(Color.MAGENTA);
-					GameLib.drawDiamond(enemy.getX(), enemy.getY(), r);
+					GameLib.drawDiamond(enemy.getX(), enemy.getY(), enemy.getRadius());
                 }
             }
         }

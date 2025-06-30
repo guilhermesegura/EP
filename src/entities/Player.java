@@ -129,9 +129,9 @@ public class Player extends ExplodableEntity implements ICollidable, IPlayerCoor
                     new Coordinate(0.0, -1.0),
                     2.0,
                     Projectiles.PLAYER_PROJECTILE,
-                    1
+                    2
                 ));
-                nextShot = currentTime + 100;
+                nextShot = currentTime + 200;
     }
 
 }

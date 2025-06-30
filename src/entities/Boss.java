@@ -75,7 +75,7 @@ public class Boss extends Enemy {
                 // Disparo único forte
                 enemyProjectiles.add(new Projectiles(
                     new Coordinate(getX(), getY()),
-                    new Coordinate(0, 0.5),
+                    new Coordinate(0, 0.2),
                     20.0,
                     Projectiles.ENEMY_PROJECTILE,
                     4
