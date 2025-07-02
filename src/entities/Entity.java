@@ -2,7 +2,7 @@ package entities;
 import utils.*;
 import entities.interfaces.*;
 
-public abstract class Entity implements IEntity {
+public abstract class Entity implements ICollidable{
 
     private Coordinate coordinates;
     private Coordinate velocity;
@@ -84,5 +84,7 @@ public abstract class Entity implements IEntity {
 	public Coordinate getCoordinate() {
         return this.coordinates;
 	}
+
+    public abstract void update(long delta);
 
 }

@@ -109,7 +109,6 @@ public class Game {
             for (Enemy enemy : enemies) {
                 enemy.update(delta);
                 enemy.shoot(currentTime, enemyProjectiles);
-                System.out.println(enemy.getRadius());
             }
 
             if (boss != null) {
