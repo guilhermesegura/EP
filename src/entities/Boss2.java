@@ -71,7 +71,7 @@ public class Boss2 extends Boss {
         if (getState() == States.ACTIVE) {
             // Movimento horizontal com reversão ao tocar a borda
             setX(getX() + getVx() * delta);
-            if (getX() < -getRadius() || getX() > GameLib.WIDTH - getRadius()) {
+            if (getX() < -1*getRadius() || getX() > GameLib.WIDTH - getRadius()) {
                 setVx(getVx() * -1);
             }
 
