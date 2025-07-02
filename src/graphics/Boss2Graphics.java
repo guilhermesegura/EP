@@ -92,19 +92,6 @@ public class Boss2Graphics {
         GameLib.fillRect(x - size/3, y - (size * blink)/3, size * 0.6, size * 0.6 * blink);
     }
 
-    private static void drawMouth(double x, double y, double size, long currentTime) {
-        // Boca
-        GameLib.setColor(new Color(150, 40, 40));
-        GameLib.fillRect(x - size/2, y - size/4, size, size/2);
-        
-        // Dentes
-        GameLib.setColor(Color.WHITE);
-        for(int i = 0; i < 5; i++) {
-            double toothX = x - size/2 + i * size/4;
-            GameLib.fillRect(toothX, y - size/4, size/8, size/4);
-        }
-        
-    }
 
     private static void drawHealthBar(Boss boss) {
         double barWidth = boss.getRadius() * 1.5 + 1;

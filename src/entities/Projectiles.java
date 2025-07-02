@@ -1,9 +1,8 @@
 package entities;
 
-import entities.interfaces.*;
 import utils.*;
 
-public class Projectiles extends Entity implements ICollidable {
+public class Projectiles extends Entity {
 
     // Tipos de projéteis
     public static final int PLAYER_PROJECTILE = 1;
@@ -15,10 +14,6 @@ public class Projectiles extends Entity implements ICollidable {
 
     private static final double ENEMY_RADIUS = 2.0;
     private static final int ENEMY_DAMAGE = 1;
-
-    // Para projéteis especiais (ex: boss)
-    private static final double BOSS_PROJECTILE_RADIUS = 10.0;
-    private static final int BOSS_PROJECTILE_DAMAGE = 3;
 
     private int type;
     private int damage;

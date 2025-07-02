@@ -4,7 +4,7 @@ import entities.interfaces.*;
 import java.util.*;
 import utils.*;
 
-public class Player extends ExplodableEntity implements ICollidable, IPlayerCoord {
+public class Player extends ExplodableEntity implements IPlayerCoord {
 
     private long nextShot;
     private long lastHitTime;

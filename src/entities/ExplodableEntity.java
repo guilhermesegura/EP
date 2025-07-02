@@ -1,6 +1,5 @@
 package entities;
 
-import java.util.*;
 import utils.*;
 
 public abstract class ExplodableEntity extends Entity {

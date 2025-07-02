@@ -1,7 +1,6 @@
 package entities;
 
 import utils.*;
-import entities.interfaces.*;
 
 
 public abstract class PowerUp extends Entity {
@@ -19,18 +18,7 @@ public abstract class PowerUp extends Entity {
     }
 
 
-    public void onCollected(Player player) {
-        // switch (type) {
-        //     case EXTRA_LIFE:
-        //         player.increaseLives();
-        //         break;
-        //     case SMALL_PLAYER:
-        //         player.shrink();
-        //         break;
-        // }
-        // // Marca o power-up como coletado (morto)
-        // setState(States.INACTIVE);
-    }
+    public abstract void onCollected(Player player);
 
 
 }

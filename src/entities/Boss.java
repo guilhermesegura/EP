@@ -11,7 +11,6 @@ public class Boss extends Enemy {
     private int attackPattern = 0;
     private int maxHealth;
     private static final double MAX_RADIUS = 30.0; //tamanho dos Bosses
-    private static boolean shouldSpawn = true;
 
     //ATRIBUTOS DE VELOCIDADE
     private static final double MAX_VX = 0.1;
@@ -112,7 +111,6 @@ public class Boss extends Enemy {
             setHealth(0);
             explosion(System.currentTimeMillis());
             setState(States.INACTIVE);
-            shouldSpawn = false;
         }
     }
 
