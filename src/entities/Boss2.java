@@ -21,16 +21,16 @@ public class Boss2 extends Boss {
         if (!canAttack()) return;
 
         
-        if(cycle_counter < 75)
+        if(cycle_counter <= 50)
         {
-            if(cycle_counter % 50 == 0){
+            if(cycle_counter %  25 == 0){
                 Coordinate direction = new Coordinate(player.getCoordinate().getX() - getX(), player.getCoordinate().getY() - getY());
                 double size_direction = Math.sqrt((direction.getX()* direction.getX())  + (direction.getY() * direction.getY()));
                 Coordinate normdirection = new Coordinate(direction.getX()/size_direction, direction.getY()/size_direction);
 
                 enemyProjectiles.add(new Projectiles(
                 new Coordinate(getX() + 40, getY()),
-                new Coordinate(normdirection.getX() , normdirection.getY()),
+                new Coordinate(normdirection.getX() * Math.random() * 1.1, normdirection.getY() * Math.random() * 1.1),
                 10,
                 Projectiles.ENEMY_PROJECTILE,
                 3
