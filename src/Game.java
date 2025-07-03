@@ -16,6 +16,7 @@ public class Game {
     private static long levelCompleteTime;
     private static Loader gameLoader;
     private static LevelLoader levelLoader;
+    private static Spawner spawner;
 
     public static void main(String[] args) {
         boolean running = true;
@@ -49,6 +50,7 @@ public class Game {
 
         GameLib.initGraphics();
         levelLoader.startLevel(levelLoader.getCurrentLevelIndex(), currentTime);
+        spawner = new Spawner(gameLoader, levelLoader);
 
         while (running) {
             delta = System.currentTimeMillis() - currentTime;
@@ -80,6 +82,7 @@ public class Game {
                     if (levelLoader.hasMoreLevels()) {
                         levelLoader.nextLevel();
                         levelLoader.startLevel(levelLoader.getCurrentLevelIndex(), currentTime);
+                        spawner.reset(currentTime);
                         playerProjectiles.clear();
                         enemyProjectiles.clear();
                         enemies.clear();
@@ -121,12 +124,12 @@ public class Game {
                 }
             }
 
-            Boss newBoss = levelLoader.processSpawnEvents(currentTime, enemies, player);
+            Boss newBoss = spawner.processSpawnEvents(currentTime, enemies, player);
             if (newBoss != null) {
                 boss = newBoss;
             }
 
-            levelLoader.handleEnemy2SquadSpawning(currentTime, enemies);
+            spawner.handleEnemy2SquadSpawning(currentTime, enemies);
 
             for (Projectiles p : playerProjectiles) {
                 for (Enemy e : enemies) {
