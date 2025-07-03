@@ -51,15 +51,6 @@ public class Boss2 extends Boss {
         setLastAttackTime(System.currentTimeMillis());  
     }
 
-    protected void setLastAttackTime(long time) {
-        try {
-            java.lang.reflect.Field field = Boss.class.getDeclaredField("lastAttackTime");
-            field.setAccessible(true);
-            field.setLong(this, time);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void update(long delta) {
         if (getState() == States.EXPLODING) {
@@ -72,7 +63,11 @@ public class Boss2 extends Boss {
         if (getState() == States.ACTIVE) {
             // Movimento horizontal com reversão ao tocar a borda
             setX(getX() + getVx() * delta);
-            if (getX() < -1*getRadius() || getX() > GameLib.WIDTH - getRadius()) {
+            if (getX() <= -1*getRadius()) {
+                setVx(Math.abs(getVx()));
+            }
+            if (getX() > GameLib.WIDTH - getRadius())
+            {
                 setVx(getVx() * -1);
             }
         }

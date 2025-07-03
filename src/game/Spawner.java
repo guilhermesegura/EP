@@ -58,7 +58,7 @@ public class Spawner {
 
     private Boss createBoss(SpawnEvent event, Player player) {
         if (event.getEntityType() == 1) {
-            return new Boss(
+            return new Boss1(
                 new Coordinate(event.getX(), event.getY()),
                 event.getHealth()
             );

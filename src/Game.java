@@ -88,6 +88,7 @@ public class Game {
                         enemies.clear();
                         powerUps.clear();
                         player.setRadius(player.getMaxRadius());
+                        player.setHealth(player.getMaxHealth());
                         boss = null;
                     }
                 }
