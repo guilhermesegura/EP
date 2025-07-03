@@ -13,6 +13,7 @@ public class Boss2 extends Boss {
         super.setAttackCooldown(0);
         this.cycle_counter = 0;
         this.player = p;
+        setVy(0);
     }
 
     @Override
@@ -20,7 +21,7 @@ public class Boss2 extends Boss {
         if (!canAttack()) return;
 
         
-        if(cycle_counter < 100)
+        if(cycle_counter < 75)
         {
             if(cycle_counter % 50 == 0){
                 Coordinate direction = new Coordinate(player.getCoordinate().getX() - getX(), player.getCoordinate().getY() - getY());
@@ -29,7 +30,7 @@ public class Boss2 extends Boss {
 
                 enemyProjectiles.add(new Projectiles(
                 new Coordinate(getX() + 40, getY()),
-                new Coordinate(normdirection.getX() * 0.6 , normdirection.getY() * 0.6),
+                new Coordinate(normdirection.getX() , normdirection.getY()),
                 10,
                 Projectiles.ENEMY_PROJECTILE,
                 3
@@ -73,12 +74,6 @@ public class Boss2 extends Boss {
             setX(getX() + getVx() * delta);
             if (getX() < -1*getRadius() || getX() > GameLib.WIDTH - getRadius()) {
                 setVx(getVx() * -1);
-            }
-
-            // Movimento vertical até 30% da tela
-            setY(getY() + getVy() * delta);
-            if (getY() > GameLib.HEIGHT * 0.3) {
-                setVy(0);
             }
         }
     }

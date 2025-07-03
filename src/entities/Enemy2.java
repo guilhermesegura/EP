@@ -22,7 +22,8 @@ public class Enemy2 extends Enemy {
     private static final double MAX_VX = 0.42;
     private static final double MAX_VY = 0.42;
 
-
+    private long lastTimeShooted = 0;
+    private static final long shootCooldown = 500;
     private boolean readyToShoot;
     private double previousY;
     private boolean passedThreshold;
@@ -108,7 +109,7 @@ public class Enemy2 extends Enemy {
 
     public void shoot(long currentTime, List<Projectiles> enemyProjectiles)
     {
-        if (shouldShoot()) {
+        if (shouldShoot() && (currentTime - lastTimeShooted) > shootCooldown) {
             double[] angles = { Math.PI / 2 + Math.PI / 8, Math.PI / 2, Math.PI / 2 - Math.PI / 8 };
             for (double angle : angles) {
                 double a = angle + Math.random() * Math.PI/6 - Math.PI/12;
@@ -122,6 +123,7 @@ public class Enemy2 extends Enemy {
                     1
                 ));
             }
+            lastTimeShooted = currentTime;
         }
     }
 }
