@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import utils.Collision;
 import utils.Coordinate;
 import utils.GameLib;
 import utils.States;

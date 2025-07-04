@@ -1,6 +1,5 @@
-package entities;
+package utils;
 
-import utils.*;
 import entities.interfaces.*;
 
 
