@@ -7,7 +7,7 @@ import utils.States;
 public abstract class Boss extends Enemy{
 
     private long lastAttackTime;
-    long attackCooldown = 500; // 2 seconds
+    long attackCooldown = 500; 
     private int maxHealth;
     private static final double MAX_RADIUS = 30.0; //tamanho dos Bosses
 

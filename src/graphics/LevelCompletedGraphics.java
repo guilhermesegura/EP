@@ -50,7 +50,7 @@ public class LevelCompletedGraphics {
         }
     }
 
-    // Método auxiliar para resetar o tempo (chame quando o próximo nível começar)
+    // Método auxiliar para resetar o tempo 
     public static void resetTimer() {
         startTime = null;
     }

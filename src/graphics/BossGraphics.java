@@ -1,4 +1,3 @@
-/*Boss graphics*/
 package graphics;
 
 import entities.Boss;

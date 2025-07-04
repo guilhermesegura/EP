@@ -25,7 +25,7 @@ public class Loader {
             throw new  IllegalArgumentException("Configuração inválida: deve conter pelo menos a vida do jogador e número de fases.");
         }
 
-        // A primeira linha representa a vida do jogador. Hint: trim() -> remove espaços em branco no início e no fim da string
+        // A primeira linha representa a vida do jogador
         playerLife = Integer.parseInt(lines.get(0).trim());
         
         // Segunda linha: número de fases

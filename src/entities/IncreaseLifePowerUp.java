@@ -7,14 +7,14 @@ public class IncreaseLifePowerUp extends PowerUp {
     }
 
     @Override
-    public void update(long deltaTime) {  // Changed to match parent class
+    public void update(long deltaTime) {  
         if (getState() == States.ACTIVE) {
             double newX = getX() + getVx() * deltaTime;
             double newY = getY() + getVy() * deltaTime;
             setX(newX);
             setY(newY);
             
-            // Deactivate if goes off-screen
+            // Desativa se estiver fora da tela
             if (newY > GameLib.HEIGHT + 10) {
                 setState(States.INACTIVE);
             }
@@ -24,7 +24,7 @@ public class IncreaseLifePowerUp extends PowerUp {
     @Override
     public void onCollected(Player player) {
         if (getState() == States.ACTIVE) {
-            int increase = Math.ceilDiv(player.getMaxHealth(),5); //aumenta 20%
+            int increase = Math.ceilDiv(player.getMaxHealth(),5); 
             int newHealth = player.getHealth() + increase;
             if(newHealth < player.getMaxHealth()) {
                 player.setHealth(newHealth);  

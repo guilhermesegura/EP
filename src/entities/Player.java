@@ -8,14 +8,14 @@ public class Player extends ExplodableEntity implements IPlayerCoord {
 
     private long nextShot;
     private long lastHitTime;
-    private final long invulnerabilityTime = 1000; // 1 second
+    private final long invulnerabilityTime = 1000;
     private long blinkStartTime;
     private boolean isBlinking = false;
-    private int maxHealth; // variável que salva a vida do jogador após a configuração
-    private static final long BLINK_DURATION = 1000; // 1 second blinking
-    private static final long BLINK_INTERVAL = 100; // Blink every 100ms
-    private static final double MAX_RADIUS = 12.0;   // Player radius
-    private static final double MIN_RADIUS = 6.0;    // Player radius
+    private int maxHealth; 
+    private static final long BLINK_DURATION = 1000; 
+    private static final long BLINK_INTERVAL = 100; 
+    private static final double MAX_RADIUS = 12.0;   
+    private static final double MIN_RADIUS = 6.0;    
 
     public Player(Coordinate coordinate, Coordinate velocity, int maxHealth) {
         super(coordinate, velocity, States.ACTIVE, MAX_RADIUS, maxHealth);

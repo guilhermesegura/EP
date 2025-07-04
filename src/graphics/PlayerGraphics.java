@@ -7,20 +7,20 @@ import utils.States;
 
 public class PlayerGraphics {
     public static void draw(Player player, Color color, long currentTime) {
-        // Draw player or explosion (mantido igual)
+        
         if(player.getState() == States.EXPLODING) {
             double alpha = (currentTime - player.getExplosionStart()) / 
                           (player.getExplosionEnd() - player.getExplosionStart());
             GameLib.drawExplosion(player.getX(), player.getY(), alpha);
         }
         else if(player.getState() == States.ACTIVE) {
-            // Only draw player if not blinking or during visible phase
+            
             if (player.shouldDrawPlayer(currentTime)) {
                 GameLib.setColor(color);
                 GameLib.drawPlayer(player.getX(), player.getY(), player.getRadius());
             }
         }
-        // Draw hearts using pixel art style
+       
         drawHealthBar(player);
     }
 

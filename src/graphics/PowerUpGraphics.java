@@ -55,22 +55,18 @@ public class PowerUpGraphics {
     private static void drawShrinkSymbol(double x, double y, double size) {
         double radius = size;
 
-        // Círculo externo
         GameLib.setColor(Color.ORANGE);
         GameLib.drawCircle(x, y, radius);
 
-        // Setas para o centro
         double arrowLength = radius * 0.6;
         double arrowHeadSize = radius * 0.2;
 
         GameLib.setColor(Color.ORANGE);
 
-        // Seta da esquerda →
         GameLib.drawLine(x - arrowLength, y, x - arrowLength / 2, y);
         GameLib.drawLine(x - arrowLength / 2, y, x - arrowLength / 2 - arrowHeadSize, y - arrowHeadSize);
         GameLib.drawLine(x - arrowLength / 2, y, x - arrowLength / 2 - arrowHeadSize, y + arrowHeadSize);
 
-        // Seta da direita ←
         GameLib.drawLine(x + arrowLength, y, x + arrowLength / 2, y);
         GameLib.drawLine(x + arrowLength / 2, y, x + arrowLength / 2 + arrowHeadSize, y - arrowHeadSize);
         GameLib.drawLine(x + arrowLength / 2, y, x + arrowLength / 2 + arrowHeadSize, y + arrowHeadSize);

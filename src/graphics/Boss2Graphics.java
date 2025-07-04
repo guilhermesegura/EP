@@ -79,7 +79,7 @@ public class Boss2Graphics {
     }
 
     private static void drawEye(double x, double y, double size, long currentTime) {
-        // Piscar ocasional
+        // Piscar 
         double blink = Math.abs(Math.sin(currentTime * 0.002)) > 0.9 ? 
                       Math.abs(Math.sin(currentTime * 0.01)) : 1.0;
         
@@ -106,7 +106,7 @@ public class Boss2Graphics {
         double greenWidth = barWidth * bossRatio;
         double redWidth = barWidth - greenWidth;
 
-        // Desenhar a parte verde (vida restante)
+        // Desenha a parte verde (vida restante)
         GameLib.setColor(Color.GREEN);
         GameLib.fillRect(barX + greenWidth / 2, barY, greenWidth, barHeight);
 

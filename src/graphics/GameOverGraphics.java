@@ -43,7 +43,6 @@ public class GameOverGraphics {
         }
     }
     
-    // Método mantido para compatibilidade (se necessário)
     public static void drawCharWithLines(char c, double x, double y, int size) {
         CharGraphics.drawCharWithLines(c, x, y, size);
     }

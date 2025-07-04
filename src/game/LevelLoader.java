@@ -6,15 +6,13 @@ public class LevelLoader {
     private int currentLevelIndex;
     private long levelStartTime;
     private boolean levelCompleted;
-    private boolean gameWon;  // Novo campo para controle de vitória
+    private boolean gameWon; 
     
-    // Variáveis para controle do esquadrão de inimigos;
-
     public LevelLoader(Loader gameLoader) {
         this.gameLoader = gameLoader;
         this.currentLevelIndex = 0;
         this.levelCompleted = false;
-        this.gameWon = false;  // Inicializa como false
+        this.gameWon = false;  
     }
 
     public void startLevel(int levelIndex, long currentTime) {
@@ -35,7 +33,6 @@ public class LevelLoader {
         }
     }
 
-    // Métodos existentes
     public boolean isLevelCompleted() {
         return levelCompleted;
     }
