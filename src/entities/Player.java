@@ -27,9 +27,6 @@ public class Player extends ExplodableEntity implements IPlayerCoord {
 
     public void update(long delta) {
         if (getState() == States.EXPLODING) {
-            if (System.currentTimeMillis() > getExplosionEnd()) {
-                respawn();
-            }
             return;
         }
 
@@ -70,16 +67,6 @@ public class Player extends ExplodableEntity implements IPlayerCoord {
         }
     }
 
-    public void respawn() {
-        setState(States.ACTIVE);
-        setHealth(getMaxHealth()); // Use getMaxHealth() instead of MAX_HEALTH
-        setX(GameLib.WIDTH / 2);
-        setY(GameLib.HEIGHT * 0.9);
-        // Reset invulnerability timer for new life
-        this.lastHitTime = System.currentTimeMillis();
-        this.blinkStartTime = System.currentTimeMillis();
-        this.isBlinking = true;
-    }
 
     public void heal(int amount) {
         setHealth(Math.min(getHealth() + amount, getMaxHealth()));

@@ -45,7 +45,7 @@ public abstract class Enemy extends ExplodableEntity{
 
     public abstract boolean shouldShoot();
 
-    public PowerUp maybeSpawnPowerUp(double x, double y) {
+    public PowerUp shouldSpawnPowerUp(double x, double y) {
         if (Math.random() < 0.15) {  // 15% de chance de spawn
 
             double speedY = 0.1;

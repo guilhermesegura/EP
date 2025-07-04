@@ -138,7 +138,7 @@ public class Game {
                 for (Enemy e : enemies) {
                     if (Collision.VerifyColision(p, e)) {
                         e.explosion(currentTime);
-                        PowerUp pw = e.maybeSpawnPowerUp(e.getX(), e.getY());
+                        PowerUp pw = e.shouldSpawnPowerUp(e.getX(), e.getY());
                         if (pw != null) {
                             powerUps.add(pw);
                         }
