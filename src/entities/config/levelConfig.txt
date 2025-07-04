@@ -1,1 +1,0 @@
-Nesse pacote teremos apenas o txt que define as configurações das fases
