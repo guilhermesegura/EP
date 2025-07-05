@@ -1,1 +1,1 @@
-Projeto COO
+Projeto Jogo 2D Utilizando Orientação a Objetos em Java
